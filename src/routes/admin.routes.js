@@ -41,6 +41,7 @@ const {
     deleteNotification,
     getUsersForNotification
 } = require("../controllers/admincontrollers");
+const { toggleSubscriptionAccess, getHRAdminSubscriptionStatus } = require("../controllers/subscriptionAccess");
 const { verifyadmintoken } = require("../middlewares/auth");
 const multer = require('multer');
 const path = require('path');
@@ -139,5 +140,9 @@ router.get("/users-for-notification", verifyadmintoken, getUsersForNotification)
 
 
 
+
+// Subscription access control routes
+router.route("/hr-admin/:hrAdminId/subscription-status").get(verifyadmintoken, getHRAdminSubscriptionStatus);
+router.route("/hr-admin/toggle-subscription-access").post(verifyadmintoken, toggleSubscriptionAccess);
 
 module.exports = router;

@@ -16,6 +16,7 @@ const moment = require("moment");
 const { tokengenerate } = require("../middlewares/auth");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const SubscriptionModel = require("../models/subscription");
 
 exports.AdminAddEvent = asyncHandler(async (req, res) => {
   const { name } = req.body;

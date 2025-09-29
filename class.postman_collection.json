@@ -1,0 +1,5031 @@
+{
+	"info": {
+		"_postman_id": "8792d626-7891-43c9-84fc-c2f456ef8eac",
+		"name": "class",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31967345"
+	},
+	"item": [
+		{
+			"name": "grade",
+			"item": [
+				{
+					"name": "add grade",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admintoken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"grade\":\"12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/grade",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"grade"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "add grade",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"grade\":\"1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/grade",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"grade"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "198"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"c6-62mW9QxMZ4gYHvQwXa/4SkbjalA\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 15:42:09 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"grade\": \"1\",\n        \"students\": [],\n        \"teachers\": [],\n        \"subjects\": [],\n        \"_id\": \"665f35d154d51693a06b372f\",\n        \"createdAt\": \"2024-06-04T15:42:09.021Z\",\n        \"updatedAt\": \"2024-06-04T15:42:09.021Z\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "get grades",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{1}}/grade",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"grade"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get grades",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{1}}/grade",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"grade"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2167"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"877-Phf+W78gVzvOFMPCBMqImJNwKA8\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 15:42:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"All grades get succesfully\",\n    \"data\": [\n        {\n            \"_id\": \"665f35d154d51693a06b372f\",\n            \"grade\": \"1\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:09.021Z\",\n            \"updatedAt\": \"2024-06-04T15:42:09.021Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35d954d51693a06b3732\",\n            \"grade\": \"2\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:17.600Z\",\n            \"updatedAt\": \"2024-06-04T15:42:17.600Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35db54d51693a06b3735\",\n            \"grade\": \"3\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:19.140Z\",\n            \"updatedAt\": \"2024-06-04T15:42:19.140Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35dc54d51693a06b3738\",\n            \"grade\": \"4\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:20.339Z\",\n            \"updatedAt\": \"2024-06-04T15:42:20.339Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35dd54d51693a06b373b\",\n            \"grade\": \"5\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:21.996Z\",\n            \"updatedAt\": \"2024-06-04T15:42:21.996Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35df54d51693a06b373e\",\n            \"grade\": \"6\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:23.850Z\",\n            \"updatedAt\": \"2024-06-04T15:42:23.850Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35e354d51693a06b3741\",\n            \"grade\": \"7\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:27.216Z\",\n            \"updatedAt\": \"2024-06-04T15:42:27.216Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35e554d51693a06b3744\",\n            \"grade\": \"8\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:29.163Z\",\n            \"updatedAt\": \"2024-06-04T15:42:29.163Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35e654d51693a06b3747\",\n            \"grade\": \"9\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:30.805Z\",\n            \"updatedAt\": \"2024-06-04T15:42:30.805Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35eb54d51693a06b374a\",\n            \"grade\": \"10\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:35.989Z\",\n            \"updatedAt\": \"2024-06-04T15:42:35.989Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35ed54d51693a06b374d\",\n            \"grade\": \"11\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:37.781Z\",\n            \"updatedAt\": \"2024-06-04T15:42:37.781Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"665f35ef54d51693a06b3750\",\n            \"grade\": \"12\",\n            \"students\": [],\n            \"teachers\": [],\n            \"subjects\": [],\n            \"createdAt\": \"2024-06-04T15:42:39.604Z\",\n            \"updatedAt\": \"2024-06-04T15:42:39.604Z\",\n            \"__v\": 0\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "subjects",
+			"item": [
+				{
+					"name": "add subject",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admintoken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"grade\":\"665f35d154d51693a06b372f\",\r\n    \"name\":\"Math\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/subject",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"subject"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "add subject",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"grade\":\"665f35d154d51693a06b372f\",\r\n    \"name\":\"Biology\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/subject",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"subject"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "236"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"ec-c/f9AeiP9GFqg23R4WBww3+OMXo\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 16:15:28 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Subject created\",\n    \"data\": {\n        \"name\": \"biology\",\n        \"topics\": [],\n        \"grade\": \"665f35d154d51693a06b372f\",\n        \"_id\": \"665f3da03f048fba879d1b14\",\n        \"createdAt\": \"2024-06-04T16:15:28.867Z\",\n        \"updatedAt\": \"2024-06-04T16:15:28.867Z\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "getAllsubjectsbygrade",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{1}}/subject/grade/66b3d6bf935d0e0a6cf48f92",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"subject",
+								"grade",
+								"66b3d6bf935d0e0a6cf48f92"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get all subject by grade",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{1}}/subject/grade/665f35d154d51693a06b372f",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"subject",
+										"grade",
+										"665f35d154d51693a06b372f"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "462"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1ce-EJyX74iUH+MSpxbGxIkrE85oLCQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 16:36:04 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"_id\": \"665f3da03f048fba879d1b14\",\n            \"name\": \"biology\",\n            \"topics\": [],\n            \"grade\": {\n                \"_id\": \"665f35d154d51693a06b372f\",\n                \"grade\": \"1\",\n                \"students\": [\n                    \"665f3922868b44aa5f084609\"\n                ],\n                \"teachers\": [],\n                \"subjects\": [\n                    \"665f3da03f048fba879d1b14\"\n                ],\n                \"createdAt\": \"2024-06-04T15:42:09.021Z\",\n                \"updatedAt\": \"2024-06-04T16:15:28.925Z\",\n                \"__v\": 6\n            },\n            \"createdAt\": \"2024-06-04T16:15:28.867Z\",\n            \"updatedAt\": \"2024-06-04T16:15:28.867Z\",\n            \"__v\": 0\n        }\n    ],\n    \"message\": \"All subjects of grade find successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "update subject",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admintoken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Biology1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/subject/665f3da03f048fba879d1b14",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"subject",
+								"665f3da03f048fba879d1b14"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "update subject",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"Biology1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/subject/665f3da03f048fba879d1b14",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"subject",
+										"665f3da03f048fba879d1b14"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "250"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"fa-fMa1lIBOjbQkkTkbu4y7/shR5Gg\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 05 Jun 2024 20:05:08 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"665f3da03f048fba879d1b14\",\n        \"name\": \"biology1\",\n        \"topics\": [],\n        \"grade\": \"665f35d154d51693a06b372f\",\n        \"createdAt\": \"2024-06-04T16:15:28.867Z\",\n        \"updatedAt\": \"2024-06-04T16:15:28.867Z\",\n        \"__v\": 0\n    },\n    \"message\": \"subject updated successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "delete subject",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admintoken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/subject/665f3da03f048fba879d1b14",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"subject",
+								"665f3da03f048fba879d1b14"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "delete subject",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/subject/665f3da03f048fba879d1b14",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"subject",
+										"665f3da03f048fba879d1b14"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "56"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"38-9PKXceLmtM61McqOnnbhijMVckA\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 06 Jun 2024 21:40:45 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"subject delete successfully\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "topics",
+			"item": [
+				{
+					"name": "add topic",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admintoken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Transportation of life\",\r\n    \"subject\": \"666b598cec5d3c31d5f96267\",\r\n    \"difficulty\": \"Beginner\",\r\n    \"image\":\"1717512710189-worktJourneyReplay - Copy (6).png\",\r\n    \"type\":\"Premium\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/topic",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"topic"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "add topic",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Transportation of life\",\r\n    \"subject\": \"6660c46dd765cd3ccd8e03bf\",\r\n    \"difficulty\": \"Beginner\"   \r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/topic",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"topic"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "253"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"fd-xmCqOmDTkoSjx6RV/Wl0sMAci1M\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 11 Jun 2024 17:20:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"transportation of life\",\n    \"subject\": \"6660c46dd765cd3ccd8e03bf\",\n    \"difficulty\": \"Beginner\",\n    \"lessons\": [],\n    \"quizes\": [],\n    \"practices\": [],\n    \"_id\": \"6668875ebf018d40d84711f0\",\n    \"createdAt\": \"2024-06-11T17:20:30.212Z\",\n    \"updatedAt\": \"2024-06-11T17:20:30.212Z\",\n    \"__v\": 0\n}"
+						},
+						{
+							"name": "add topic with image",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Transportation of life\",\r\n    \"subject\": \"6660c46dd765cd3ccd8e03bf\",\r\n    \"difficulty\": \"Beginner\",\r\n    \"image\":\"1717512710189-worktJourneyReplay - Copy (6).png\"\r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/topic",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"topic"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "311"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"137-FluutDw2JGzpO81TaGFk4aF/J0E\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 11 Jun 2024 17:21:04 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"transportation of life\",\n    \"image\": \"1717512710189-worktJourneyReplay - Copy (6).png\",\n    \"subject\": \"6660c46dd765cd3ccd8e03bf\",\n    \"difficulty\": \"Beginner\",\n    \"lessons\": [],\n    \"quizes\": [],\n    \"practices\": [],\n    \"_id\": \"6668877fbf018d40d84711f7\",\n    \"createdAt\": \"2024-06-11T17:21:03.923Z\",\n    \"updatedAt\": \"2024-06-11T17:21:03.923Z\",\n    \"__v\": 0\n}"
+						}
+					]
+				},
+				{
+					"name": "get topics by subject id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{1}}/topic?subject=66b3d6bf935d0e0a6cf48f92",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"topic"
+							],
+							"query": [
+								{
+									"key": "subject",
+									"value": "66b3d6bf935d0e0a6cf48f92"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get topics by subject id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{1}}/topic?subject=6660c46dd765cd3ccd8e03bf",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"topic"
+									],
+									"query": [
+										{
+											"key": "subject",
+											"value": "6660c46dd765cd3ccd8e03bf"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "645"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"285-oz5sZdWp1j6n7m/nW2S18Fq8RuM\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 11 Jun 2024 17:24:40 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"data\": [\n        {\n            \"_id\": \"6668875ebf018d40d84711f0\",\n            \"name\": \"transportation of life\",\n            \"subject\": \"6660c46dd765cd3ccd8e03bf\",\n            \"difficulty\": \"Beginner\",\n            \"lessons\": [],\n            \"quizes\": [],\n            \"practices\": [],\n            \"createdAt\": \"2024-06-11T17:20:30.212Z\",\n            \"updatedAt\": \"2024-06-11T17:20:30.212Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"6668877fbf018d40d84711f7\",\n            \"name\": \"transportation of life\",\n            \"image\": \"1717512710189-worktJourneyReplay - Copy (6).png\",\n            \"subject\": \"6660c46dd765cd3ccd8e03bf\",\n            \"difficulty\": \"Beginner\",\n            \"lessons\": [],\n            \"quizes\": [],\n            \"practices\": [],\n            \"createdAt\": \"2024-06-11T17:21:03.923Z\",\n            \"updatedAt\": \"2024-06-11T17:21:03.923Z\",\n            \"__v\": 0\n        }\n    ],\n    \"message\": \"lesson found sucessfully\",\n    \"success\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "update topic",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admintoken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"abc\",\r\n    \"difficulty\":\"Medium\"\r\n    \r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/topic/6668875ebf018d40d84711f0",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"topic",
+								"6668875ebf018d40d84711f0"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "update topic",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"abc\",\r\n    \"difficulty\":\"Medium\"\r\n    \r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/topic/6668875ebf018d40d84711f0",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"topic",
+										"6668875ebf018d40d84711f0"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "295"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"127-xob+Gx0qFLti2aviYxi14v6J/6c\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 11 Jun 2024 17:34:01 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"6668875ebf018d40d84711f0\",\n        \"name\": \"abc\",\n        \"subject\": \"6660c46dd765cd3ccd8e03bf\",\n        \"difficulty\": \"Medium\",\n        \"lessons\": [],\n        \"quizes\": [],\n        \"practices\": [],\n        \"createdAt\": \"2024-06-11T17:20:30.212Z\",\n        \"updatedAt\": \"2024-06-11T17:34:01.579Z\",\n        \"__v\": 0\n    },\n    \"message\": \"topic updated successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "update topic Copy",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admintoken}}"
+							}
+						],
+						"url": {
+							"raw": "{{1}}/topic/66689606a7bf1d871ea0d347",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"topic",
+								"66689606a7bf1d871ea0d347"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "topic delete",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"url": {
+									"raw": "{{1}}/topic/66689606a7bf1d871ea0d347",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"topic",
+										"66689606a7bf1d871ea0d347"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "55"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-jXq6k7OzvUI5HLoVbCJ0B2nvGd4\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 11 Jun 2024 18:27:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"topic deleted successfully\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "lessons",
+			"item": [
+				{
+					"name": "add lessons",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admintoken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"topic\":\"6668877fbf018d40d84711f7\",\r\n    \"name\":\"Photosynthese\",\r\n    \"content\":\"PhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthese\",\r\n    \"pages\":2,\r\n    \"image\":\"1717512710189-worktJourneyReplay - Copy (6).png\",\r\n    \"lang\":\"Eng\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/topic/lesson",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"topic",
+								"lesson"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "add lessons",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"topic\":\"6668877fbf018d40d84711f7\",\r\n    \"name\":\"Photosynthese\",\r\n    \"content\":\"PhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthese\",\r\n    \"pages\":2,\r\n    \"image\":\"1717512710189-worktJourneyReplay - Copy (6).png\",\r\n    \"lang\":\"Eng\"\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/topic/lesson",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"topic",
+										"lesson"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "515"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"203-Z0nXjkDnTX6EleMjcwzlAdbPAfU\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 11 Jun 2024 20:02:10 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"name\": \"Photosynthese\",\n        \"image\": \"1717512710189-worktJourneyReplay - Copy (6).png\",\n        \"content\": \"PhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthese\",\n        \"words\": 169,\n        \"lang\": \"Eng\",\n        \"pages\": 2,\n        \"topic\": \"6668877fbf018d40d84711f7\",\n        \"_id\": \"6668ad41eeb9c569f2e0f307\",\n        \"createdAt\": \"2024-06-11T20:02:09.775Z\",\n        \"updatedAt\": \"2024-06-11T20:02:09.775Z\",\n        \"__v\": 0\n    },\n    \"message\": \"Lesson added successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get lessons by topic id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{1}}/topic/lesson/66b3dcff6d5a262329f94792",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"topic",
+								"lesson",
+								"66b3dcff6d5a262329f94792"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get lessons y topic id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{1}}/topic/lesson/6668877fbf018d40d84711f7",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"topic",
+										"lesson",
+										"6668877fbf018d40d84711f7"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "195"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"c3-c8DimWEtOB2kYji++xQivYVHmos\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 11 Jun 2024 20:07:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"data\": [\n        {\n            \"_id\": \"6668ad41eeb9c569f2e0f307\",\n            \"name\": \"Photosynthese\",\n            \"image\": \"1717512710189-worktJourneyReplay - Copy (6).png\"\n        }\n    ],\n    \"message\": \"lesson found sucessfully\",\n    \"success\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "get lesson content",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{1}}/topic/lesson/content/6668ad41eeb9c569f2e0f307",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"topic",
+								"lesson",
+								"content",
+								"6668ad41eeb9c569f2e0f307"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get lesson content",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{1}}/topic/lesson/content/6668ad41eeb9c569f2e0f307",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"topic",
+										"lesson",
+										"content",
+										"6668ad41eeb9c569f2e0f307"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "488"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1e8-ULOAwUbCYuvfqcKlVIHthPexauw\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 11 Jun 2024 20:08:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Content Found\",\n    \"data\": {\n        \"_id\": \"6668ad41eeb9c569f2e0f307\",\n        \"name\": \"Photosynthese\",\n        \"image\": \"1717512710189-worktJourneyReplay - Copy (6).png\",\n        \"content\": \"PhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthesePhotosynthese\",\n        \"words\": 169,\n        \"lang\": \"Eng\",\n        \"pages\": 2,\n        \"topic\": \"6668877fbf018d40d84711f7\",\n        \"createdAt\": \"2024-06-11T20:02:09.775Z\",\n        \"updatedAt\": \"2024-06-11T20:02:09.775Z\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "update lesson",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admintoken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"content\": \"test content test content test content test content test content \" }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/topic/lesson/6668ad41eeb9c569f2e0f307",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"topic",
+								"lesson",
+								"6668ad41eeb9c569f2e0f307"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "update lesson",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \"content\": \"test content test content test content test content test content \" }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/topic/lesson/6668ad41eeb9c569f2e0f307",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"topic",
+										"lesson",
+										"6668ad41eeb9c569f2e0f307"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "412"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"19c-y9oQULc9gF15o0wpl4S3v0zD+gw\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 11 Jun 2024 20:22:14 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"6668ad41eeb9c569f2e0f307\",\n        \"name\": \"Photosynthese\",\n        \"image\": \"1717512710189-worktJourneyReplay - Copy (6).png\",\n        \"content\": \"test content test content test content test content test content \",\n        \"words\": 65,\n        \"lang\": \"Eng\",\n        \"pages\": 2,\n        \"topic\": \"6668877fbf018d40d84711f7\",\n        \"createdAt\": \"2024-06-11T20:02:09.775Z\",\n        \"updatedAt\": \"2024-06-11T20:22:14.327Z\",\n        \"__v\": 0\n    },\n    \"message\": \"Lesson updated successfully\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "parent",
+			"item": [
+				{
+					"name": "register parent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"fullName\":\"parent2\",\r\n      \"userName\":\"parent2\",\r\n      \"password\":\"parent2\",\r\n      \"email\":\"parent2@gmail.com\",\r\n      \"fullAddress\":\"parent\",\r\n      \"userType\":\"Parent\"\r\n    //   \"childIds\":[\"511593\"]\r\n    //   \"grade\":\"\", optional and is the _id of grade     \r\n    //childIds stdId in array\r\n      \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/auth/register",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "register parent",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"fullName\":\"abc\",\r\n      \"userName\":\"testing\",\r\n      \"password\":\"321321\",\r\n      \"email\":\"testing@yopmail.com\",\r\n      \"fullAddress\":\"abc\",\r\n      \"userType\":\"Parent\",\r\n      \"childIds\":[\"511593\"]\r\n    //   \"grade\":\"\", optional and is the _id of grade     \r\n    //childIds stdId in array\r\n      \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/auth/register",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1033"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"409-Cok/+FtT1KaNobmQNNE5+IeXUX8\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 09:20:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"fullName\": \"abc\",\n        \"userName\": \"testing\",\n        \"email\": \"testing@yopmail.com\",\n        \"password\": \"$2b$10$rPMv3Fb4uvpP2MEJMcCG2OfJ4lnHUDLEDwW7Rlf81mG/HlCc6VVq6\",\n        \"userType\": \"Parent\",\n        \"fullAddress\": \"abc\",\n        \"_id\": \"665edc746c0cac0bc47c5c56\",\n        \"profile\": \"665edc746c0cac0bc47c5c56\",\n        \"createdAt\": \"2024-06-04T09:20:53.195Z\",\n        \"updatedAt\": \"2024-06-04T09:20:53.195Z\",\n        \"__v\": 0,\n        \"auth\": \"665edc746c0cac0bc47c5c54\",\n        \"childIds\": [\n            \"665e3899b82643a6cb4eed4c\"\n        ],\n        \"prtId\": \"940407\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImZ1bGxOYW1lIjoiYWJjIiwidXNlck5hbWUiOiJ0ZXN0aW5nIiwiZW1haWwiOiJ0ZXN0aW5nQHlvcG1haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkclBNdjNGYjR1dnBQMk1FSk1jQ0cyT2ZKNGxuSFVETEVEd1c3UmxmODFtRy9IbENjNlZWcTYiLCJ1c2VyVHlwZSI6IlBhcmVudCIsImZ1bGxBZGRyZXNzIjoiYWJjIiwiX2lkIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU0IiwicHJvZmlsZSI6IjY2NWVkYzc0NmMwY2FjMGJjNDdjNWM1NiIsImNyZWF0ZWRBdCI6IjIwMjQtMDYtMDRUMDk6MjA6NTMuMDUxWiIsInVwZGF0ZWRBdCI6IjIwMjQtMDYtMDRUMDk6MjA6NTMuMDUxWiIsIl9fdiI6MH0sImlhdCI6MTcxNzQ5Mjg1M30.nyxLU3Jd7t08b0T5I7SFLyExTBUvO4UJypZnkm2MBEc\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get my childs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{1}}/mychilds",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"mychilds"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get my childs",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{1}}/mychilds",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"mychilds"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "656"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"290-FUzwItN+tKsPb/detRKx0ou4bnI\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 15 Jun 2024 12:46:35 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"data\": [\n        {\n            \"_id\": \"666d8a1e606bf9c50f5c146e\",\n            \"auth\": {\n                \"_id\": \"666d8a1e606bf9c50f5c146c\",\n                \"fullName\": \"abc\",\n                \"userName\": \"std5\",\n                \"email\": \"std5@yopmail.com\",\n                \"userType\": \"Student\",\n                \"fullAddress\": \"abc\",\n                \"profile\": \"666d8a1e606bf9c50f5c146e\",\n                \"createdAt\": \"2024-06-15T12:33:35.605Z\",\n                \"updatedAt\": \"2024-06-15T12:33:35.605Z\",\n                \"__v\": 0\n            },\n            \"grade\": {\n                \"_id\": \"666b510e00af65249616e251\",\n                \"grade\": \"12\",\n                \"teachers\": [],\n                \"subjects\": [],\n                \"createdAt\": \"2024-06-13T20:05:34.071Z\",\n                \"updatedAt\": \"2024-06-15T12:33:34.490Z\",\n                \"__v\": 4\n            },\n            \"code\": \"319575\",\n            \"createdAt\": \"2024-06-15T12:33:35.974Z\",\n            \"updatedAt\": \"2024-06-15T12:33:35.974Z\",\n            \"__v\": 0\n        }\n    ],\n    \"message\": \"childs founded succesfully\",\n    \"success\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "add my child",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"stdid\":\"319575\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/addchild",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"addchild"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "add my child",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"stdid\":\"319575\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/addchild",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"addchild"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "288"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"120-s+Nwfs8aIQGLEoRasLm/R/fZWds\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 15 Jun 2024 12:37:20 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"data\": {\n        \"_id\": \"666d8a79606bf9c50f5c1473\",\n        \"auth\": \"666d8a79606bf9c50f5c1472\",\n        \"childIds\": [\n            \"666d8a1e606bf9c50f5c146e\"\n        ],\n        \"code\": \"764643\",\n        \"createdAt\": \"2024-06-15T12:35:06.294Z\",\n        \"updatedAt\": \"2024-06-15T12:35:06.294Z\",\n        \"__v\": 0\n    },\n    \"message\": \"child added successfully\",\n    \"success\": true\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var d= pm.response.json().data\r",
+									"pm.collectionVariables.set(\"studenttoken\", \"Bearer \"+d.token); \r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"std9\",\r\n    \"password\": \"321\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/auth/login",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n     \"userName\":\"testing\",\r\n      \"password\":\"321321\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/auth/login",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1374"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"55e-mdrOsT/4fpQnH0KWuj3JfwFhJ3k\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 11:18:43 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"665edc746c0cac0bc47c5c54\",\n        \"fullName\": \"abc\",\n        \"userName\": \"testing\",\n        \"email\": \"testing@yopmail.com\",\n        \"password\": \"$2b$10$rPMv3Fb4uvpP2MEJMcCG2OfJ4lnHUDLEDwW7Rlf81mG/HlCc6VVq6\",\n        \"userType\": \"parent\",\n        \"fullAddress\": \"abc\",\n        \"profile\": {\n            \"_id\": \"665edc746c0cac0bc47c5c56\",\n            \"auth\": \"665edc746c0cac0bc47c5c54\",\n            \"childIds\": [\n                \"665e3899b82643a6cb4eed4c\"\n            ],\n            \"prtId\": \"940407\",\n            \"createdAt\": \"2024-06-04T09:20:53.195Z\",\n            \"updatedAt\": \"2024-06-04T09:20:53.195Z\",\n            \"__v\": 0\n        },\n        \"createdAt\": \"2024-06-04T09:20:53.051Z\",\n        \"updatedAt\": \"2024-06-04T09:20:53.051Z\",\n        \"__v\": 0,\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY2NWVkYzc0NmMwY2FjMGJjNDdjNWM1NCIsImZ1bGxOYW1lIjoiYWJjIiwidXNlck5hbWUiOiJ0ZXN0aW5nIiwiZW1haWwiOiJ0ZXN0aW5nQHlvcG1haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkclBNdjNGYjR1dnBQMk1FSk1jQ0cyT2ZKNGxuSFVETEVEd1c3UmxmODFtRy9IbENjNlZWcTYiLCJ1c2VyVHlwZSI6InBhcmVudCIsImZ1bGxBZGRyZXNzIjoiYWJjIiwicHJvZmlsZSI6eyJfaWQiOiI2NjVlZGM3NDZjMGNhYzBiYzQ3YzVjNTYiLCJhdXRoIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU0IiwiY2hpbGRJZHMiOlsiNjY1ZTM4OTliODI2NDNhNmNiNGVlZDRjIl0sInBydElkIjoiOTQwNDA3IiwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4xOTVaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4xOTVaIiwiX192IjowfSwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwiX192IjowfSwiaWF0IjoxNzE3NDk5OTIzfQ.5QDBnTmgow4O6oxKe7oHrlKx7mnNqg4OW5x-9GWA8G8\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "register student",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"fullName\":\"abc\",\r\n      \"userName\":\"std5\",\r\n      \"password\":\"123\",\r\n      \"email\":\"std5@yopmail.com\",\r\n      \"fullAddress\":\"abc\",\r\n      \"userType\":\"Student\",\r\n      \"grade\":\"666b510e00af65249616e251\"\r\n    //   \"grade\":\"\", optional and is the _id of grade     \r\n    // parent _id of parent\r\n      \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/auth/register",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"fullName\":\"abc\",\r\n      \"userName\":\"test2\",\r\n      \"password\":\"123\",\r\n      \"email\":\"test2@yopmail.com\",\r\n      \"fullAddress\":\"abc\",\r\n      \"userType\":\"Student\"\r\n    //   \"grade\":\"\", optional and is the _id of grade     \r\n      \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/auth/register",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "62"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3e-7yqeLtkJDE6VMqgt+Y0sVLuXFjE\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 08:51:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"No duplicate username acceptable\"\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"fullName\":\"abc\",\r\n      \"userName\":\"test4\",\r\n      \"password\":\"123\",\r\n      \"email\":\"test4@yopmail.com\",\r\n      \"fullAddress\":\"abc\",\r\n      \"userType\":\"Student\"\r\n    //   \"grade\":\"\", optional and is the _id of grade     \r\n      \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/auth/register",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "853"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"355-B0fnwq9sfxLA0V6LNgBo8Gn8xpc\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 08:55:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"fullName\": \"abc\",\n        \"userName\": \"test4\",\n        \"email\": \"test4@yopmail.com\",\n        \"password\": \"123\",\n        \"userType\": \"Student\",\n        \"fullAddress\": \"abc\",\n        \"_id\": \"665ed684bc42e71f4338f1ca\",\n        \"profile\": \"665ed684bc42e71f4338f1ca\",\n        \"createdAt\": \"2024-06-04T08:55:34.886Z\",\n        \"updatedAt\": \"2024-06-04T08:55:34.886Z\",\n        \"__v\": 0,\n        \"auth\": \"665ed684bc42e71f4338f1c9\",\n        \"stdId\": \"644729\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImZ1bGxOYW1lIjoiYWJjIiwidXNlck5hbWUiOiJ0ZXN0NCIsImVtYWlsIjoidGVzdDRAeW9wbWFpbC5jb20iLCJwYXNzd29yZCI6IjEyMyIsInVzZXJUeXBlIjoiU3R1ZGVudCIsImZ1bGxBZGRyZXNzIjoiYWJjIiwiX2lkIjoiNjY1ZWQ2ODRiYzQyZTcxZjQzMzhmMWM5IiwicHJvZmlsZSI6IjY2NWVkNjg0YmM0MmU3MWY0MzM4ZjFjYSIsImNyZWF0ZWRBdCI6IjIwMjQtMDYtMDRUMDg6NTU6MzQuODM0WiIsInVwZGF0ZWRBdCI6IjIwMjQtMDYtMDRUMDg6NTU6MzQuODM0WiIsIl9fdiI6MH0sImlhdCI6MTcxNzQ5MTMzNH0.yVhfErWVkEBwXnNGc40e_cjLhoQt_86zwHCQCLbwqSE\"\n}"
+						}
+					]
+				},
+				{
+					"name": "register teacher",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"fullName\":\"teacher\",\r\n      \"userName\":\"teacher\",\r\n      \"password\":\"teacher\",\r\n      \"email\":\"teacher@yopmail.com\",\r\n      \"fullAddress\":\"teacher\",\r\n      \"userType\":\"Teacher\",\r\n      \"grade\":[\"666b510e00af65249616e24c\",\"666b510e00af65249616e24a\"],\r\n      \"subject\":[\"66c5f9faec4d76ca682f23ea\",\"66c5f9ffec4d76ca682f2d1c\"]\r\n\r\n    //   \"grade\":\"\", optional and is the _id of grade     \r\n      \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/auth/register",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "register teacher",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"fullName\":\"abc\",\r\n      \"userName\":\"def\",\r\n      \"password\":\"123\",\r\n      \"email\":\"321@yopmail.com\",\r\n      \"fullAddress\":\"abc\",\r\n      \"userType\":\"Teacher\"\r\n    //   \"grade\":\"\", optional and is the _id of grade     \r\n      \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/auth/register",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "841"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"349-SlJ4qhrGZOQQtlWGHqUQDabVeiw\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 08:53:22 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"fullName\": \"abc\",\n        \"userName\": \"def\",\n        \"email\": \"321@yopmail.com\",\n        \"password\": \"123\",\n        \"userType\": \"Teacher\",\n        \"fullAddress\": \"abc\",\n        \"_id\": \"665ed602bc42e71f4338f1bc\",\n        \"profile\": \"665ed602bc42e71f4338f1bc\",\n        \"createdAt\": \"2024-06-04T08:53:22.520Z\",\n        \"updatedAt\": \"2024-06-04T08:53:22.520Z\",\n        \"__v\": 0,\n        \"auth\": \"665ed602bc42e71f4338f1bb\",\n        \"feedback\": []\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImZ1bGxOYW1lIjoiYWJjIiwidXNlck5hbWUiOiJkZWYiLCJlbWFpbCI6IjMyMUB5b3BtYWlsLmNvbSIsInBhc3N3b3JkIjoiMTIzIiwidXNlclR5cGUiOiJUZWFjaGVyIiwiZnVsbEFkZHJlc3MiOiJhYmMiLCJfaWQiOiI2NjVlZDYwMmJjNDJlNzFmNDMzOGYxYmIiLCJwcm9maWxlIjoiNjY1ZWQ2MDJiYzQyZTcxZjQzMzhmMWJjIiwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwODo1MzoyMi40NTdaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQwODo1MzoyMi40NTdaIiwiX192IjowfSwiaWF0IjoxNzE3NDkxMjAyfQ.pmOALlCqzIoVhkYOmkmub64uEnz6VLbsze3wMHtdyxM\"\n}"
+						}
+					]
+				},
+				{
+					"name": "forgot password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var d= pm.response.json()\r",
+									"pm.collectionVariables.set(\"token\", \"Bearer \"+d.token); \r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\":\"parent\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/auth/forgotpassword",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"auth",
+								"forgotpassword"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "forgot password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userName\":\"testing\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/auth/forgotpassword",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"auth",
+										"forgotpassword"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "701"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2bd-38aecRTU6JgqWzU5N8pc1TfXxzE\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 11:32:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Kindly check your email for password verification\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImF1dGgiOnsiX2lkIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU0IiwiZnVsbE5hbWUiOiJhYmMiLCJ1c2VyTmFtZSI6InRlc3RpbmciLCJlbWFpbCI6InRlc3RpbmdAeW9wbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRyUE12M0ZiNHV2cFAyTUVKTWNDRzJPZko0bG5IVURMRUR3VzdSbGY4MW1HL0hsQ2M2VlZxNiIsInVzZXJUeXBlIjoicGFyZW50IiwiZnVsbEFkZHJlc3MiOiJhYmMiLCJwcm9maWxlIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU2IiwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwiX192IjowfSwidHlwZSI6ImZvcmdvdFBhc3N3b3JkIn0sImlhdCI6MTcxNzUwMDc2Nn0.GwDsTiO0sNICoFmper6x1gf8x083oY25AlCMJIMRPLo\"\n}"
+						}
+					]
+				},
+				{
+					"name": "verify user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var d= pm.response.json()\r",
+									"pm.collectionVariables.set(\"token\", \"Bearer \"+d.token); \r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"otp\":\"442447\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/auth/verify",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"auth",
+								"verify"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "verify user",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"otp\":\"751337\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/auth/verify",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"auth",
+										"verify"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "692"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b4-xPQya4kz6d2TA+pVHGRlnroJO4c\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 12:13:27 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"User Verify successfully\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImF1dGgiOnsiX2lkIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU0IiwiZnVsbE5hbWUiOiJhYmMiLCJ1c2VyTmFtZSI6InRlc3RpbmciLCJlbWFpbCI6InRlc3RpbmdAeW9wbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRyUE12M0ZiNHV2cFAyTUVKTWNDRzJPZko0bG5IVURMRUR3VzdSbGY4MW1HL0hsQ2M2VlZxNiIsInVzZXJUeXBlIjoicGFyZW50IiwiZnVsbEFkZHJlc3MiOiJhYmMiLCJwcm9maWxlIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU2IiwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQxMjowOToxNC44MjNaIiwiX192IjowLCJvdHAiOiI3NTEzMzcifSwidHlwZSI6InZlcmlmeSB1c2VyIn0sImlhdCI6MTcxNzUwMzIwN30.H0VMhG_uJEom8YA5PrbRJB539qvjerswIky8VzR97UA\"\n}"
+						}
+					]
+				},
+				{
+					"name": "reset password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var d= pm.response.json()\r",
+									"pm.collectionVariables.set(\"token\", \"Bearer \"+d.token); \r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImF1dGgiOnsiX2lkIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU0IiwiZnVsbE5hbWUiOiJhYmMiLCJ1c2VyTmFtZSI6InRlc3RpbmciLCJlbWFpbCI6InRlc3RpbmdAeW9wbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRyUE12M0ZiNHV2cFAyTUVKTWNDRzJPZko0bG5IVURMRUR3VzdSbGY4MW1HL0hsQ2M2VlZxNiIsInVzZXJUeXBlIjoicGFyZW50IiwiZnVsbEFkZHJlc3MiOiJhYmMiLCJwcm9maWxlIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU2IiwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQxMjowOToxNC44MjNaIiwiX192IjowLCJvdHAiOiI3NTEzMzcifSwidHlwZSI6InZlcmlmeSB1c2VyIn0sImlhdCI6MTcxNzUwMzIwN30.H0VMhG_uJEom8YA5PrbRJB539qvjerswIky8VzR97UA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImF1dGgiOnsiX2lkIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU0IiwiZnVsbE5hbWUiOiJhYmMiLCJ1c2VyTmFtZSI6InRlc3RpbmciLCJlbWFpbCI6InRlc3RpbmdAeW9wbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRyUE12M0ZiNHV2cFAyTUVKTWNDRzJPZko0bG5IVURMRUR3VzdSbGY4MW1HL0hsQ2M2VlZxNiIsInVzZXJUeXBlIjoicGFyZW50IiwiZnVsbEFkZHJlc3MiOiJhYmMiLCJwcm9maWxlIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU2IiwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQxMjowOToxNC44MjNaIiwiX192IjowLCJvdHAiOiI3NTEzMzcifSwidHlwZSI6InZlcmlmeSB1c2VyIn0sImlhdCI6MTcxNzUwMzIwN30.H0VMhG_uJEom8YA5PrbRJB539qvjerswIky8VzR97UA"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":\"abcabc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/auth/restepassword",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"auth",
+								"restepassword"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "reset",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImF1dGgiOnsiX2lkIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU0IiwiZnVsbE5hbWUiOiJhYmMiLCJ1c2VyTmFtZSI6InRlc3RpbmciLCJlbWFpbCI6InRlc3RpbmdAeW9wbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRyUE12M0ZiNHV2cFAyTUVKTWNDRzJPZko0bG5IVURMRUR3VzdSbGY4MW1HL0hsQ2M2VlZxNiIsInVzZXJUeXBlIjoicGFyZW50IiwiZnVsbEFkZHJlc3MiOiJhYmMiLCJwcm9maWxlIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU2IiwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQxMjowOToxNC44MjNaIiwiX192IjowLCJvdHAiOiI3NTEzMzcifSwidHlwZSI6InZlcmlmeSB1c2VyIn0sImlhdCI6MTcxNzUwMzIwN30.H0VMhG_uJEom8YA5PrbRJB539qvjerswIky8VzR97UA"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"password\":\"123123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/auth/restepassword",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"auth",
+										"restepassword"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "56"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"38-2Gib5CWmd6iCx7e709n4PLv/myk\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 12:16:33 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Password reset successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var d= pm.response.json().data\r",
+									"pm.collectionVariables.set(\"token\", \"Bearer \"+d.token); \r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{1}}/auth/profile",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get profile",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "B eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY2NWVkYzc0NmMwY2FjMGJjNDdjNWM1NCIsImZ1bGxOYW1lIjoiYWJjIiwidXNlck5hbWUiOiJ0ZXN0aW5nIiwiZW1haWwiOiJ0ZXN0aW5nQHlvcG1haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkcHVpdHlrTUR4UjBxT2MuVDV5NkFsT1J2Y3VzQ3dPZzhGYVg1ZjFaY3RFRUo0RGpFeTlFdDIiLCJ1c2VyVHlwZSI6IlBhcmVudCIsImZ1bGxBZGRyZXNzIjoiYWJjIiwicHJvZmlsZSI6eyJfaWQiOiI2NjVlZGM3NDZjMGNhYzBiYzQ3YzVjNTYiLCJhdXRoIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU0IiwiY2hpbGRJZHMiOlsiNjY1ZTM4OTliODI2NDNhNmNiNGVlZDRjIl0sInBydElkIjoiOTQwNDA3IiwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4xOTVaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4xOTVaIiwiX192IjowfSwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQxMjoxOTozNC42NDBaIiwiX192IjowLCJvdHAiOm51bGx9LCJpYXQiOjE3MTc1MDQ3NDV9.Qhu79VQ-PEs_4qz20asn-SkA2VJhdMUw8LWO9tQnvfo"
+									}
+								],
+								"url": {
+									"raw": "{{1}}/auth/profile",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"auth",
+										"profile"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "485"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1e5-0JBuCAuqRQgqftm1z4xqgEJJiFI\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Jun 2024 12:44:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"665edc746c0cac0bc47c5c54\",\n        \"fullName\": \"abc\",\n        \"userName\": \"testing\",\n        \"email\": \"testing@yopmail.com\",\n        \"userType\": \"Parent\",\n        \"fullAddress\": \"abc\",\n        \"profile\": {\n            \"_id\": \"665edc746c0cac0bc47c5c56\",\n            \"auth\": \"665edc746c0cac0bc47c5c54\",\n            \"childIds\": [\n                \"665e3899b82643a6cb4eed4c\"\n            ],\n            \"prtId\": \"940407\",\n            \"createdAt\": \"2024-06-04T09:20:53.195Z\",\n            \"updatedAt\": \"2024-06-04T09:20:53.195Z\",\n            \"__v\": 0\n        },\n        \"createdAt\": \"2024-06-04T09:20:53.051Z\",\n        \"updatedAt\": \"2024-06-04T12:19:34.640Z\",\n        \"__v\": 0,\n        \"otp\": null\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "update user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/auth/updateuser",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"auth",
+								"updateuser"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "feedbacks",
+			"item": [
+				{
+					"name": "feedback to teacher(student)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"feedback\": \"Nice teacher\",\r\n    \"star\": 4,    \r\n    \"student\": \"66cf7ed73b22de46c9973043\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/teacher/feedback",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"teacher",
+								"feedback"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "feedback to student(teacher)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"feedback\": \"Nice teacher\",\r\n    \"star\": 4,    \r\n    \"student\": \"66cf7ed73b22de46c9973043\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/teacher/feedback",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"teacher",
+										"feedback"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "324"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"144-mHO2iO0F7KoP7+WgIi6in11mySg\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 28 Aug 2024 20:19:24 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"66cf831a2d68e4d659041fd3\",\n        \"to\": \"66cf7ed73b22de46c9973043\",\n        \"from\": \"666d92ed204678a7b0d4aa5a\",\n        \"toType\": \"Student\",\n        \"fromType\": \"Teacher\",\n        \"__v\": 0,\n        \"createdAt\": \"2024-08-28T20:05:47.059Z\",\n        \"feedback\": \"Nice teacher\",\n        \"star\": 4,\n        \"updatedAt\": \"2024-08-28T20:19:24.344Z\"\n    },\n    \"message\": \"Feedback done successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "feedback to teacher(student)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{studenttoken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"feedback\": \"Nice teacher\",\r\n    \"star\": 4,    \r\n    \"teacher\":\"666d92ed204678a7b0d4aa5a\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/student/feedback",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"student",
+								"feedback"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "feedback to teacher(student)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{studenttoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"feedback\": \"Nice teacher\",\r\n    \"star\": 4,    \r\n    \"teacher\":\"666d92ed204678a7b0d4aa5a\"\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/student/feedback",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"student",
+										"feedback"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "324"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"144-sTJLQqUaDADzeW4YBnFjpnjvv6s\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 28 Aug 2024 20:29:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"66cdfb332d68e4d65968d31b\",\n        \"from\": \"666d8a1e606bf9c50f5c146e\",\n        \"to\": \"666d92ed204678a7b0d4aa5a\",\n        \"__v\": 0,\n        \"createdAt\": \"2024-08-27T16:13:37.656Z\",\n        \"feedback\": \"Nice teacher\",\n        \"fromType\": \"Student\",\n        \"star\": 4,\n        \"toType\": \"Teacher\",\n        \"updatedAt\": \"2024-08-28T20:29:07.697Z\"\n    },\n    \"message\": \"Feedback done successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get feedbacks by parents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{parenttoken}}"
+							}
+						],
+						"url": {
+							"raw": "{{1}}/parent/feedback/66cf7ed73b22de46c9973043",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"parent",
+								"feedback",
+								"66cf7ed73b22de46c9973043"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get feedbacks by parents by child id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{parenttoken}}"
+									}
+								],
+								"url": {
+									"raw": "{{1}}/parent/feedback/66cf7ed73b22de46c9973043",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"parent",
+										"feedback",
+										"66cf7ed73b22de46c9973043"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "882"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"372-r5CVGxhs9+GK1cmmlDLNnc1eHus\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 28 Aug 2024 20:20:48 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"data\": [\n        {\n            \"_id\": \"66cf831a2d68e4d659041fd3\",\n            \"to\": \"66cf7ed73b22de46c9973043\",\n            \"from\": {\n                \"_id\": \"666d92ed204678a7b0d4aa5a\",\n                \"auth\": {\n                    \"_id\": \"666d92ed204678a7b0d4aa59\",\n                    \"fullName\": \"teacher\",\n                    \"userName\": \"teacher9\",\n                    \"profile\": \"666d92ed204678a7b0d4aa5a\",\n                    \"image\": \"http://res.cloudinary.com/deiylfley/image/upload/v1723564769/dny1yfffspfwgmwsr1nl.jpg\"\n                },\n                \"subjects\": [\n                    \"66b3d6bf935d0e0a6cf48f92\",\n                    \"66b3d6bf935d0e0a6cf48f7e\",\n                    \"66b3d6bf935d0e0a6cf48f7d\"\n                ],\n                \"createdAt\": \"2024-06-15T13:11:09.566Z\",\n                \"updatedAt\": \"2024-08-28T20:04:48.961Z\",\n                \"__v\": 0,\n                \"grade\": [\n                    \"666b510e00af65249616e250\",\n                    \"666b510e00af65249616e249\"\n                ],\n                \"students\": [\n                    \"666d8a1e606bf9c50f5c146e\",\n                    \"66cf7ed73b22de46c9973043\"\n                ]\n            },\n            \"toType\": \"Student\",\n            \"fromType\": \"Teacher\",\n            \"__v\": 0,\n            \"createdAt\": \"2024-08-28T20:05:47.059Z\",\n            \"feedback\": \"Nice teacher\",\n            \"star\": 4,\n            \"updatedAt\": \"2024-08-28T20:19:24.344Z\"\n        }\n    ],\n    \"message\": \"feedbacks Found Successfully\",\n    \"success\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "get feedbacks by teacher",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{1}}/teacher/feedback",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"teacher",
+								"feedback"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get feedbacks by teacher",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{1}}/teacher/feedback",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"teacher",
+										"feedback"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "937"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3a9-WPSIEY+2CV0h3YepBTUg34M8sns\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 28 Aug 2024 20:19:50 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"statusCode\": 200,\n    \"data\": [\n        {\n            \"_id\": \"66cdfb332d68e4d65968d31b\",\n            \"from\": {\n                \"feedback\": {\n                    \"counts\": {\n                        \"1\": 0,\n                        \"2\": 0,\n                        \"3\": 0,\n                        \"4\": 1,\n                        \"5\": 0\n                    },\n                    \"total\": 1,\n                    \"average\": 4\n                },\n                \"_id\": \"666d8a1e606bf9c50f5c146e\",\n                \"auth\": {\n                    \"_id\": \"666d8a1e606bf9c50f5c146c\",\n                    \"fullName\": \"abc\",\n                    \"userName\": \"std9\",\n                    \"email\": \"std9@yopmail.com\",\n                    \"userType\": \"Student\",\n                    \"fullAddress\": \"abc\",\n                    \"profile\": \"666d8a1e606bf9c50f5c146e\",\n                    \"createdAt\": \"2024-06-15T12:33:35.605Z\",\n                    \"updatedAt\": \"2024-08-26T19:34:24.691Z\",\n                    \"__v\": 0,\n                    \"image\": \"http://res.cloudinary.com/deiylfley/image/upload/v1724700860/rt7d6jtoufuojd0mp8lg.jpg\",\n                    \"otp\": \"941415\"\n                },\n                \"grade\": \"666b510e00af65249616e250\",\n                \"code\": \"319575\",\n                \"createdAt\": \"2024-06-15T12:33:35.974Z\",\n                \"updatedAt\": \"2024-08-27T18:40:04.059Z\",\n                \"__v\": 0\n            },\n            \"to\": \"666d92ed204678a7b0d4aa5a\",\n            \"__v\": 0,\n            \"createdAt\": \"2024-08-27T16:13:37.656Z\",\n            \"feedback\": \"Nice\",\n            \"fromType\": \"Student\",\n            \"star\": 3,\n            \"toType\": \"Teacher\",\n            \"updatedAt\": \"2024-08-27T16:14:03.443Z\"\n        }\n    ],\n    \"message\": \"feedbacks Found Successfully\",\n    \"success\": true\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "quizes",
+			"item": [
+				{
+					"name": "question",
+					"item": [
+						{
+							"name": "add question",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"question\": \"what is after B?\",\r\n    \"options\": [\r\n        \"A\",\r\n        \"D\",\r\n        \"C\",\r\n        \"F\"\r\n    ],\r\n    \"answer\": \"C\",\r\n    \"time\": 60,\r\n    \"quiz\": \"66748ac3daba098e691e133a\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/quiz/teacher/q",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"teacher",
+										"q"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "question added",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"question\": \"what is after B?\",\r\n    \"options\": [\r\n        \"A\",\r\n        \"D\",\r\n        \"C\",\r\n        \"F\"\r\n    ],\r\n    \"answer\": \"C\",\r\n    \"time\": 60,\r\n    \"quiz\": \"66748ac3daba098e691e133a\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{1}}/quiz/teacher/q",
+											"host": [
+												"{{1}}"
+											],
+											"path": [
+												"quiz",
+												"teacher",
+												"q"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "474"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"1da-SBbhXbJ19poVHqgbwpGIphdaoZs\""
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 23 Jun 2024 12:32:19 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"status\": \"pending\",\n        \"_id\": \"66748ac3daba098e691e133a\",\n        \"createdBy\": \"666d92ed204678a7b0d4aa5a\",\n        \"questions\": [\n            \"667815d352fc9de2be36991d\"\n        ],\n        \"grade\": \"666b510e00af65249616e24a\",\n        \"topic\": \"667488bc99eba246d7102b71\",\n        \"subject\": \"666b598cec5d3c31d5f96267\",\n        \"startsAt\": \"2024-06-21T03:00:00.000Z\",\n        \"endsAt\": \"2024-06-21T04:00:00.000Z\",\n        \"score\": 5,\n        \"createdAt\": \"2024-06-20T20:02:11.057Z\",\n        \"updatedAt\": \"2024-06-23T12:32:19.345Z\",\n        \"__v\": 1\n    },\n    \"message\": \"Question added successfully\"\n}"
+								}
+							]
+						},
+						{
+							"name": "update question",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \r\n    \"time\": \"50\",\r\n    \r\n    \"quiz\": \"66748ac3daba098e691e133a\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/quiz/teacher/q/667815d352fc9de2be36991d",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"teacher",
+										"q",
+										"667815d352fc9de2be36991d"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "update question",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \r\n    \"time\": \"50\",\r\n    \r\n    \"quiz\": \"66748ac3daba098e691e133a\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{1}}/quiz/teacher/q/667815d352fc9de2be36991d",
+											"host": [
+												"{{1}}"
+											],
+											"path": [
+												"quiz",
+												"teacher",
+												"q",
+												"667815d352fc9de2be36991d"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "301"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"12d-wI+H7zNmS11o67f2D/s5aJPEpwk\""
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 23 Jun 2024 12:39:33 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"667815d352fc9de2be36991d\",\n        \"quiz\": \"66748ac3daba098e691e133a\",\n        \"question\": \"what is after B?\",\n        \"options\": [\n            \"A\",\n            \"D\",\n            \"C\",\n            \"F\"\n        ],\n        \"answer\": \"D\",\n        \"time\": 50,\n        \"createdAt\": \"2024-06-23T12:32:19.062Z\",\n        \"updatedAt\": \"2024-06-23T12:39:33.189Z\",\n        \"__v\": 0\n    },\n    \"message\": \"Question updated successfully\"\n}"
+								}
+							]
+						},
+						{
+							"name": "delete question",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{1}}/quiz/teacher/q/667815d352fc9de2be36991d?quiz=66748ac3daba098e691e133a",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"teacher",
+										"q",
+										"667815d352fc9de2be36991d"
+									],
+									"query": [
+										{
+											"key": "quiz",
+											"value": "66748ac3daba098e691e133a"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "question deleted",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{token}}"
+											}
+										],
+										"url": {
+											"raw": "{{1}}/quiz/teacher/q/667815d352fc9de2be36991d?quiz=66748ac3daba098e691e133a",
+											"host": [
+												"{{1}}"
+											],
+											"path": [
+												"quiz",
+												"teacher",
+												"q",
+												"667815d352fc9de2be36991d"
+											],
+											"query": [
+												{
+													"key": "quiz",
+													"value": "66748ac3daba098e691e133a"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "301"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"12d-s234BEEXqWfX36fBurSicjDsXVs\""
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 23 Jun 2024 12:41:05 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"667815d352fc9de2be36991d\",\n        \"quiz\": \"66748ac3daba098e691e133a\",\n        \"question\": \"what is after B?\",\n        \"options\": [\n            \"A\",\n            \"D\",\n            \"C\",\n            \"F\"\n        ],\n        \"answer\": \"D\",\n        \"time\": 50,\n        \"createdAt\": \"2024-06-23T12:32:19.062Z\",\n        \"updatedAt\": \"2024-06-23T12:39:33.189Z\",\n        \"__v\": 0\n    },\n    \"message\": \"Question deleted successfully\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "student",
+					"item": [
+						{
+							"name": "start quiz",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{studenttoken}}"
+									}
+								],
+								"url": {
+									"raw": "{{1}}/quiz/student/66b6779cbbde55bd1a4ec741?status=start",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"student",
+										"66b6779cbbde55bd1a4ec741"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "start"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "start quiz",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{studenttoken}}"
+											}
+										],
+										"url": {
+											"raw": "{{1}}/quiz/student/66748ac3daba098e691e133a?status=start",
+											"host": [
+												"{{1}}"
+											],
+											"path": [
+												"quiz",
+												"student",
+												"66748ac3daba098e691e133a"
+											],
+											"query": [
+												{
+													"key": "status",
+													"value": "start"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "354"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"162-ruuZbgP+9//wHFvHmk4Z/UW9XKY\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jun 2024 19:59:02 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"student\": \"666d8a1e606bf9c50f5c146e\",\n        \"quiz\": \"66748ac3daba098e691e133a\",\n        \"status\": \"start\",\n        \"result\": \"awaiting\",\n        \"questions\": [\n            \"667815d352fc9de2be36991d\"\n        ],\n        \"answers\": [],\n        \"score\": 5,\n        \"_id\": \"6679d00571a1bbad2d98cc27\",\n        \"createdAt\": \"2024-06-24T19:59:01.998Z\",\n        \"updatedAt\": \"2024-06-24T19:59:01.998Z\",\n        \"__v\": 0\n    },\n    \"message\": \"Quiz started successfully\"\n}"
+								}
+							]
+						},
+						{
+							"name": "end quiz",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{studenttoken}}"
+									}
+								],
+								"url": {
+									"raw": "{{1}}/quiz/student/66748ac3daba098e691e133a?status=end",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"student",
+										"66748ac3daba098e691e133a"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "end"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "end quiz",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{studenttoken}}"
+											}
+										],
+										"url": {
+											"raw": "{{1}}/quiz/student/66748ac3daba098e691e133a?status=end",
+											"host": [
+												"{{1}}"
+											],
+											"path": [
+												"quiz",
+												"student",
+												"66748ac3daba098e691e133a"
+											],
+											"query": [
+												{
+													"key": "status",
+													"value": "end"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "359"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"167-a0bgVKCnBekpGs+BknBxPLrY/pw\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jun 2024 19:59:53 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"6679d00571a1bbad2d98cc27\",\n        \"student\": \"666d8a1e606bf9c50f5c146e\",\n        \"quiz\": \"66748ac3daba098e691e133a\",\n        \"status\": \"complete\",\n        \"result\": \"awaiting\",\n        \"questions\": [\n            \"667815d352fc9de2be36991d\"\n        ],\n        \"answers\": [],\n        \"score\": 5,\n        \"createdAt\": \"2024-06-24T19:59:01.998Z\",\n        \"updatedAt\": \"2024-06-24T19:59:52.879Z\",\n        \"__v\": 0\n    },\n    \"message\": \"Quiz Completed successfully\"\n}"
+								}
+							]
+						},
+						{
+							"name": "input an answer of question of quiz",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY2YzM5NzA0YjRlZTBjOTg3MTY4MzM5OCIsImZ1bGxOYW1lIjoiQXphbSIsInVzZXJOYW1lIjoiYXphbSIsImVtYWlsIjoid2FyaXNhbGxhaDkyM0BnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRjYWI5UDBpcVY3ZHVDOU1ycm8uamZ1dkV5TkVBeGtnaVpyYUIvMnVUV1daOWI1WkhvR3BrSyIsInVzZXJUeXBlIjoiU3R1ZGVudCIsImZ1bGxBZGRyZXNzIjoiTWFuc2VocmEsIEtQSywgUGFraXN0YW4iLCJwcm9maWxlIjp7Il9pZCI6IjY2YzM5NzA0YjRlZTBjOTg3MTY4MzM5YSIsImF1dGgiOiI2NmMzOTcwNGI0ZWUwYzk4NzE2ODMzOTgiLCJncmFkZSI6eyJncmFkZSI6IkdyYWRlIDkiLCJzdHVkZW50cyI6W10sInRlYWNoZXJzIjpbXSwic3ViamVjdHMiOltdLCJfaWQiOiI2NjZiNTEwZTAwYWY2NTI0OTYxNmUyNTAifSwiY29kZSI6IjMzNzQyNiIsImNyZWF0ZWRBdCI6IjIwMjQtMDgtMTlUMTk6MDM6MzMuMjI1WiIsInVwZGF0ZWRBdCI6IjIwMjQtMDgtMTlUMTk6MDM6MzMuMjI1WiIsIl9fdiI6MH0sImNyZWF0ZWRBdCI6IjIwMjQtMDgtMTlUMTk6MDM6MzMuMDk1WiIsInVwZGF0ZWRBdCI6IjIwMjQtMDgtMTlUMjA6NTg6MjYuODQ5WiIsIl9fdiI6MCwib3RwIjoiMjYzOTgzIn0sImlhdCI6MTcyNDQ4OTE5Mn0.gPOQd-TNjPSFn8ITe-zMv7HuJguOzGY7MX4HeBnQgQ8"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"answer\":\"A\",\r\n    \"index\":1\r\n    \r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/quiz/student/a/66b6779cbbde55bd1a4ec741",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"student",
+										"a",
+										"66b6779cbbde55bd1a4ec741"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "input an answer of question of quiz",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{studenttoken}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"answer\":\"D\",\r\n    \"index\":1\r\n}\r\n",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{1}}/quiz/student/a/6679d00571a1bbad2d98cc27",
+											"host": [
+												"{{1}}"
+											],
+											"path": [
+												"quiz",
+												"student",
+												"a",
+												"6679d00571a1bbad2d98cc27"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "356"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"164-NNlhsIFmPy6rod/TzXtsrf/w9rA\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jun 2024 20:07:23 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"6679d00571a1bbad2d98cc27\",\n        \"student\": \"666d8a1e606bf9c50f5c146e\",\n        \"quiz\": \"66748ac3daba098e691e133a\",\n        \"status\": \"start\",\n        \"result\": \"awaiting\",\n        \"questions\": [\n            \"667815d352fc9de2be36991d\"\n        ],\n        \"answers\": [\n            \"D\"\n        ],\n        \"score\": 5,\n        \"createdAt\": \"2024-06-24T19:59:01.998Z\",\n        \"updatedAt\": \"2024-06-24T20:07:22.864Z\",\n        \"__v\": 0\n    },\n    \"message\": \"Answer done successfully\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "teacher",
+					"item": [
+						{
+							"name": "add quiz by teacher",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{studenttoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"grade\": \"666b510e00af65249616e250\",\r\n    \"subject\": \"66b3d6bf935d0e0a6cf48f92\",\r\n\r\n    \"topic\": \"66b3dcff6d5a262329f94792\",\r\n    \"lesson\": \"66b3f6959a7d59ca4f572d2e\",\r\n\r\n    \"startsAt\": \"2024-08-12T08:00:00\",\r\n    \"endsAt\": \"2024-06-12T09:00:00\",\r\n    \"score\": 10,\r\n    \"questions\": [\r\n        {\r\n            \"question\": \"What is the first step in the scientific research process?\",\r\n            \"options\": [\r\n                \"Analyzing data\",\r\n                \"Drawing conclusions\",\r\n                \"Identifying the problem\",\r\n                \"Conducting experiments\"\r\n            ],\r\n            \"answer\": \"Identifying the problem\",\r\n            \"time\": 60\r\n        },\r\n       {\r\n            \"question\": \"What should you do before forming a hypothesis?\",\r\n            \"options\": [\r\n                \"Conduct an experiment\",\r\n                \"Analyze data\",\r\n                \"Gather information\",\r\n                \"Draw conclusions\"\r\n            ],\r\n            \"answer\": \"Gather information\",\r\n            \"time\": 60\r\n        },\r\n        {\r\n            \"question\": \"What type of information should you look for when gathering data for your research?\",\r\n            \"options\": [\r\n                \"Unreliable sources\",\r\n                \"Opinions\",\r\n                \"Reputable sources\",\r\n                \"Fictional stories\"\r\n            ],\r\n            \"answer\": \"Reputable sources\",\r\n            \"time\": 60\r\n        },{\r\n            \"question\": \"What is a hypothesis?\",\r\n            \"options\": [\r\n                \"A random guess\",\r\n                \"A detailed conclusion\",\r\n                \"An educated guess\",\r\n                \"A known fact\"\r\n            ],\r\n            \"answer\": \"An educated guess\",\r\n            \"time\": 60\r\n        },{\r\n            \"question\": \"Which of the following is an example of collecting data?\",\r\n            \"options\": [\r\n                \"Predicting the outcome of an experiment\",\r\n                \"Reading scientific journals\",\r\n                \"Measuring plant growth\",\r\n                \"Formulating a problem\"\r\n            ],\r\n            \"answer\": \"Measuring plant growth\",\r\n            \"time\": 60\r\n        },{\r\n            \"question\": \"Why is it important to document observations during experiments?\",\r\n            \"options\": [\r\n                \"To have a record for analysis\",\r\n                \"To make the experiment longer\",\r\n                \"To use up supplies\",\r\n                \"To impress the teacher\"\r\n            ],\r\n            \"answer\": \"To have a record for analysis\",\r\n            \"time\": 60\r\n        }\r\n\r\n        ,{\r\n            \"question\": \"What does analyzing data help you understand?\",\r\n            \"options\": [\r\n                \"How to conduct experiments\",\r\n                \"Whether your hypothesis is supported\",\r\n                \"How to write a hypothesis\",\r\n                \"How to identify a problem\"\r\n            ],\r\n            \"answer\": \"Whether your hypothesis is supported\",\r\n            \"time\": 60\r\n        },{\r\n            \"question\": \"Which step comes immediately after conducting experiments?\",\r\n            \"options\": [\r\n                \"Drawing conclusions\",\r\n                \"Observing and collecting data\",\r\n                \"Formulating a hypothesis\",\r\n                \"Gathering information\"\r\n            ],\r\n            \"answer\": \"Observing and collecting data\",\r\n            \"time\": 60\r\n        },{\r\n            \"question\": \"What is the purpose of drawing conclusions in the scientific process?\",\r\n            \"options\": [\r\n                \"To start the research process\",\r\n                \"To summarize your findings\",\r\n                \"To decide on the problem\",\r\n                \"To choose an experiment\"\r\n            ],\r\n            \"answer\": \"To summarize your findings\",\r\n            \"time\": 60\r\n        }\r\n        ,{\r\n            \"question\": \"What should a good experiment be able to do?\",\r\n            \"options\": [\r\n                \"Prove a hypothesis beyond doubt\",\r\n                \"Be repeated with the same results\",\r\n                \"Use a lot of resources\",\r\n                \"Take a long time to complete\"\r\n            ],\r\n            \"answer\": \"Be repeated with the same results\",\r\n            \"time\": 60\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/quiz/teacher",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"teacher"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "add quiz by teacher",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"grade\": \"666b510e00af65249616e24a\",\r\n    \"topic\": \"667488bc99eba246d7102b71\",\r\n    \"subject\": \"666b598cec5d3c31d5f96267\",\r\n    \"startsAt\": \"2024-06-21T08:00:00\",\r\n    \"endsAt\": \"2024-06-21T09:00:00\",\r\n    \"score\": 5,\r\n    \"questions\": [\r\n        {\r\n            \"question\": \"what is after B?\",\r\n            \"options\": [\r\n                \"A\",\r\n                \"D\",\r\n                \"C\",\r\n                \"F\"\r\n            ],\r\n            \"answer\": \"C\",\r\n            \"time\": 60\r\n        },\r\n       {\r\n            \"question\": \"what is after B?\",\r\n            \"options\": [\r\n                \"A\",\r\n                \"D\",\r\n                \"C\",\r\n                \"F\"\r\n            ],\r\n            \"answer\": \"C\",\r\n            \"time\": 60\r\n        },\r\n        {\r\n            \"question\": \"what is after B?\",\r\n            \"options\": [\r\n                \"A\",\r\n                \"D\",\r\n                \"C\",\r\n                \"F\"\r\n            ],\r\n            \"answer\": \"C\",\r\n            \"time\": 60\r\n        },{\r\n            \"question\": \"what is after B?\",\r\n            \"options\": [\r\n                \"A\",\r\n                \"D\",\r\n                \"C\",\r\n                \"F\"\r\n            ],\r\n            \"answer\": \"C\",\r\n            \"time\": 60\r\n        },{\r\n            \"question\": \"what is after B?\",\r\n            \"options\": [\r\n                \"A\",\r\n                \"D\",\r\n                \"C\",\r\n                \"F\"\r\n            ],\r\n            \"answer\": \"C\",\r\n            \"time\": 60\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{1}}/quiz/teacher",
+											"host": [
+												"{{1}}"
+											],
+											"path": [
+												"quiz",
+												"teacher"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "559"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"22f-/QjtUMZKDmarPEKScgmJNjmBvlc\""
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 20 Jun 2024 20:05:41 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"createdBy\": \"666d92ed204678a7b0d4aa5a\",\n        \"questions\": [\n            \"66748b9296fb28922ed6cc5b\",\n            \"66748b9296fb28922ed6cc5d\",\n            \"66748b9296fb28922ed6cc5a\",\n            \"66748b9296fb28922ed6cc5c\",\n            \"66748b9296fb28922ed6cc5e\"\n        ],\n        \"grade\": \"666b510e00af65249616e24a\",\n        \"topic\": \"667488bc99eba246d7102b71\",\n        \"subject\": \"666b598cec5d3c31d5f96267\",\n        \"startsAt\": \"2024-06-21T03:00:00.000Z\",\n        \"endsAt\": \"2024-06-21T04:00:00.000Z\",\n        \"score\": 5,\n        \"_id\": \"66748b9296fb28922ed6cc59\",\n        \"createdAt\": \"2024-06-20T20:05:40.737Z\",\n        \"updatedAt\": \"2024-06-20T20:05:40.737Z\",\n        \"__v\": 0\n    },\n    \"message\": \"Quiz added successfully\"\n}"
+								}
+							]
+						},
+						{
+							"name": "update quiz",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    // \"grade\": \"666b510e00af65249616e24a\",\r\n    // \"topic\": \"667488bc99eba246d7102b71\",\r\n    // \"subject\": \"666b598cec5d3c31d5f96267\",\r\n    // \"startsAt\": \"2024-06-21T08:00:00\",\r\n    // \"endsAt\": \"2024-06-21T09:00:00\",\r\n    \"score\": 10\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/quiz/teacher/66748ac3daba098e691e133a",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"teacher",
+										"66748ac3daba098e691e133a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get student quizes",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{teachertoken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{1}}/quiz/teacher/student/66748ac3daba098e691e133a",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"teacher",
+										"student",
+										"66748ac3daba098e691e133a"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "get student quizes",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{admintoken}}"
+											}
+										],
+										"url": {
+											"raw": "{{1}}/quiz/teacher/student/66748ac3daba098e691e133a",
+											"host": [
+												"{{1}}"
+											],
+											"path": [
+												"quiz",
+												"teacher",
+												"student",
+												"66748ac3daba098e691e133a"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "902"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"386-+SaWrS+GPtLLORCM5fvhKwumsDQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jun 2024 20:15:43 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"_id\": \"6679d00571a1bbad2d98cc27\",\n            \"student\": {\n                \"_id\": \"666d8a1e606bf9c50f5c146e\",\n                \"auth\": \"666d8a1e606bf9c50f5c146c\",\n                \"grade\": \"666b510e00af65249616e251\",\n                \"code\": \"319575\",\n                \"createdAt\": \"2024-06-15T12:33:35.974Z\",\n                \"updatedAt\": \"2024-06-15T12:33:35.974Z\",\n                \"__v\": 0\n            },\n            \"quiz\": {\n                \"_id\": \"66748ac3daba098e691e133a\",\n                \"createdBy\": \"666d92ed204678a7b0d4aa5a\",\n                \"questions\": [\n                    \"667815d352fc9de2be36991d\"\n                ],\n                \"grade\": \"666b510e00af65249616e24a\",\n                \"topic\": \"667488bc99eba246d7102b71\",\n                \"subject\": \"666b598cec5d3c31d5f96267\",\n                \"startsAt\": \"2024-06-21T03:00:00.000Z\",\n                \"endsAt\": \"2024-06-21T04:00:00.000Z\",\n                \"score\": 5,\n                \"createdAt\": \"2024-06-20T20:02:11.057Z\",\n                \"updatedAt\": \"2024-06-23T12:44:42.351Z\",\n                \"__v\": 1,\n                \"status\": \"end\"\n            },\n            \"status\": \"complete\",\n            \"result\": \"awaiting\",\n            \"questions\": [],\n            \"answers\": [\n                \"D\"\n            ],\n            \"score\": 5,\n            \"createdAt\": \"2024-06-24T19:59:01.998Z\",\n            \"updatedAt\": \"2024-06-24T20:15:30.211Z\",\n            \"__v\": 0\n        }\n    ],\n    \"message\": \"Student Quizes done successfully\"\n}"
+								}
+							]
+						},
+						{
+							"name": "update result of student quiz",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"score\":5,\r\n    \"result\":\"pass\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/quiz/teacher/s/6679d00571a1bbad2d98cc27",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"teacher",
+										"s",
+										"6679d00571a1bbad2d98cc27"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "update result of student quiz",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "{{token}}"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"score\":5,\r\n    \"result\":\"pass\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{1}}/quiz/teacher/s/6679d00571a1bbad2d98cc27",
+											"host": [
+												"{{1}}"
+											],
+											"path": [
+												"quiz",
+												"teacher",
+												"s",
+												"6679d00571a1bbad2d98cc27"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "897"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"381-LNYjiW2Oo2SdnB8xFYdKsa9rwcw\""
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 25 Jun 2024 20:11:15 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"6679d00571a1bbad2d98cc27\",\n        \"student\": {\n            \"_id\": \"666d8a1e606bf9c50f5c146e\",\n            \"auth\": \"666d8a1e606bf9c50f5c146c\",\n            \"grade\": \"666b510e00af65249616e251\",\n            \"code\": \"319575\",\n            \"createdAt\": \"2024-06-15T12:33:35.974Z\",\n            \"updatedAt\": \"2024-06-15T12:33:35.974Z\",\n            \"__v\": 0\n        },\n        \"quiz\": {\n            \"_id\": \"66748ac3daba098e691e133a\",\n            \"createdBy\": \"666d92ed204678a7b0d4aa5a\",\n            \"questions\": [\n                \"667815d352fc9de2be36991d\"\n            ],\n            \"grade\": \"666b510e00af65249616e24a\",\n            \"topic\": \"667488bc99eba246d7102b71\",\n            \"subject\": \"666b598cec5d3c31d5f96267\",\n            \"startsAt\": \"2024-06-21T03:00:00.000Z\",\n            \"endsAt\": \"2024-06-21T04:00:00.000Z\",\n            \"score\": 5,\n            \"createdAt\": \"2024-06-20T20:02:11.057Z\",\n            \"updatedAt\": \"2024-06-23T12:44:42.351Z\",\n            \"__v\": 1,\n            \"status\": \"end\"\n        },\n        \"status\": \"result\",\n        \"result\": \"pass\",\n        \"questions\": [],\n        \"answers\": [\n            \"D\"\n        ],\n        \"score\": 5,\n        \"createdAt\": \"2024-06-24T19:59:01.998Z\",\n        \"updatedAt\": \"2024-06-25T20:11:15.141Z\",\n        \"__v\": 0\n    },\n    \"message\": \"Student Quizes updated successfully\"\n}"
+								}
+							]
+						},
+						{
+							"name": "delete quiz",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{1}}/quiz/teacher/66748ac3daba098e691e133a",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz",
+										"teacher",
+										"66748ac3daba098e691e133a"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "get quizes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{1}}/quiz?grade=666b510e00af65249616e24a&teacher=",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"quiz"
+							],
+							"query": [
+								{
+									"key": "grade",
+									"value": "666b510e00af65249616e24a"
+								},
+								{
+									"key": "teacher",
+									"value": ""
+								},
+								{
+									"key": "status",
+									"value": "pending",
+									"description": "pending || start || complete",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get quizes",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{1}}/quiz",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"quiz"
+									],
+									"query": [
+										{
+											"key": "grade",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "teacher",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "pending",
+											"description": "pending || start || complete",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2330"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"91a-X4aVs1DfcI4vKX9zQK67a9w19tM\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 20 Jun 2024 20:26:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"status\": \"pending\",\n            \"_id\": \"66748ac3daba098e691e133a\",\n            \"createdBy\": \"666d92ed204678a7b0d4aa5a\",\n            \"questions\": [],\n            \"grade\": \"666b510e00af65249616e24a\",\n            \"topic\": \"667488bc99eba246d7102b71\",\n            \"subject\": \"666b598cec5d3c31d5f96267\",\n            \"startsAt\": \"2024-06-21T03:00:00.000Z\",\n            \"endsAt\": \"2024-06-21T04:00:00.000Z\",\n            \"score\": 5,\n            \"createdAt\": \"2024-06-20T20:02:11.057Z\",\n            \"updatedAt\": \"2024-06-20T20:02:11.057Z\",\n            \"__v\": 0\n        },\n        {\n            \"status\": \"pending\",\n            \"_id\": \"66748b4ccb27ec2d4a87aeda\",\n            \"createdBy\": \"666d92ed204678a7b0d4aa5a\",\n            \"questions\": [],\n            \"grade\": \"666b510e00af65249616e24a\",\n            \"topic\": \"667488bc99eba246d7102b71\",\n            \"subject\": \"666b598cec5d3c31d5f96267\",\n            \"startsAt\": \"2024-06-21T03:00:00.000Z\",\n            \"endsAt\": \"2024-06-21T04:00:00.000Z\",\n            \"score\": 5,\n            \"createdAt\": \"2024-06-20T20:04:28.562Z\",\n            \"updatedAt\": \"2024-06-20T20:04:28.562Z\",\n            \"__v\": 0\n        },\n        {\n            \"status\": \"pending\",\n            \"_id\": \"66748b9296fb28922ed6cc59\",\n            \"createdBy\": \"666d92ed204678a7b0d4aa5a\",\n            \"questions\": [\n                {\n                    \"_id\": \"66748b9296fb28922ed6cc5b\",\n                    \"quiz\": \"66748b9296fb28922ed6cc59\",\n                    \"question\": \"what is after B?\",\n                    \"options\": [\n                        \"A\",\n                        \"D\",\n                        \"C\",\n                        \"F\"\n                    ],\n                    \"time\": 60,\n                    \"createdAt\": \"2024-06-20T20:05:38.603Z\",\n                    \"updatedAt\": \"2024-06-20T20:05:38.603Z\",\n                    \"__v\": 0\n                },\n                {\n                    \"_id\": \"66748b9296fb28922ed6cc5d\",\n                    \"quiz\": \"66748b9296fb28922ed6cc59\",\n                    \"question\": \"what is after B?\",\n                    \"options\": [\n                        \"A\",\n                        \"D\",\n                        \"C\",\n                        \"F\"\n                    ],\n                    \"time\": 60,\n                    \"createdAt\": \"2024-06-20T20:05:38.603Z\",\n                    \"updatedAt\": \"2024-06-20T20:05:38.603Z\",\n                    \"__v\": 0\n                },\n                {\n                    \"_id\": \"66748b9296fb28922ed6cc5a\",\n                    \"quiz\": \"66748b9296fb28922ed6cc59\",\n                    \"question\": \"what is after B?\",\n                    \"options\": [\n                        \"A\",\n                        \"D\",\n                        \"C\",\n                        \"F\"\n                    ],\n                    \"time\": 60,\n                    \"createdAt\": \"2024-06-20T20:05:38.602Z\",\n                    \"updatedAt\": \"2024-06-20T20:05:38.602Z\",\n                    \"__v\": 0\n                },\n                {\n                    \"_id\": \"66748b9296fb28922ed6cc5c\",\n                    \"quiz\": \"66748b9296fb28922ed6cc59\",\n                    \"question\": \"what is after B?\",\n                    \"options\": [\n                        \"A\",\n                        \"D\",\n                        \"C\",\n                        \"F\"\n                    ],\n                    \"time\": 60,\n                    \"createdAt\": \"2024-06-20T20:05:38.603Z\",\n                    \"updatedAt\": \"2024-06-20T20:05:38.603Z\",\n                    \"__v\": 0\n                },\n                {\n                    \"_id\": \"66748b9296fb28922ed6cc5e\",\n                    \"quiz\": \"66748b9296fb28922ed6cc59\",\n                    \"question\": \"what is after B?\",\n                    \"options\": [\n                        \"A\",\n                        \"D\",\n                        \"C\",\n                        \"F\"\n                    ],\n                    \"time\": 60,\n                    \"createdAt\": \"2024-06-20T20:05:38.603Z\",\n                    \"updatedAt\": \"2024-06-20T20:05:38.603Z\",\n                    \"__v\": 0\n                }\n            ],\n            \"grade\": \"666b510e00af65249616e24a\",\n            \"topic\": \"667488bc99eba246d7102b71\",\n            \"subject\": \"666b598cec5d3c31d5f96267\",\n            \"startsAt\": \"2024-06-21T03:00:00.000Z\",\n            \"endsAt\": \"2024-06-21T04:00:00.000Z\",\n            \"score\": 5,\n            \"createdAt\": \"2024-06-20T20:05:40.737Z\",\n            \"updatedAt\": \"2024-06-20T20:05:40.737Z\",\n            \"__v\": 0\n        }\n    ],\n    \"message\": \"Quizes get successfully\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "events",
+			"item": [
+				{
+					"name": "add event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{admintoken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Admission open\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/admin/event",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"admin",
+								"event"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "add event",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{admintoken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"Admission open\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/admin/event",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"admin",
+										"event"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "128"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"80-YsXIGPtZhRSvc5o9FKYF59NUTNw\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 15 Jun 2024 14:15:16 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"data\": {\n        \"name\": \"admission open\",\n        \"_id\": \"666da1f31ce30a7629dc157a\",\n        \"__v\": 0\n    },\n    \"message\": \"Event Created Successfuly\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "teacher",
+			"item": [
+				{
+					"name": "my students",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{1}}/teacher/mystudents",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"teacher",
+								"mystudents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"stdId\":[\"319575\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/teacher/addstudent",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"teacher",
+								"addstudent"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "add student",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"stdId\":[\"319575\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/teacher/addstudent",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"teacher",
+										"addstudent"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "55"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-CawJeA5oVrxBAWU1wJeNJbbSDzU\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 14 Aug 2024 11:56:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Request added successfully\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "student",
+			"item": [
+				{
+					"name": "get requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{studenttoken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{1}}/student/myrequests",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"student",
+								"myrequests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update Request",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{studenttoken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\":\"Completed\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/student/request/66bc9b6937f61769e0c48650",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"student",
+								"request",
+								"66bc9b6937f61769e0c48650"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "update Request",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{studenttoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\":\"Completed\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/student/request/66bc9b6937f61769e0c48650",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"student",
+										"request",
+										"66bc9b6937f61769e0c48650"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "57"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"39-cRXYgVyln86RsXTipz8hAlVTxfA\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 14 Aug 2024 12:28:59 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Request updated successfully\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "games",
+			"item": [
+				{
+					"name": "add games",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{teachertoken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n    {\r\n        \"title\":\"Puzzle game\",\r\n        \"grade\": \"666b510e00af65249616e250\",\r\n    \"subject\": \"66b3d6bf935d0e0a6cf48f92\",\r\n\r\n    \"topic\": \"66b3dcff6d5a262329f94792\",\r\n    \"score\":10,\r\n    \"image\":\"http://res.cloudinary.com/deiylfley/image/upload/v1723824481/iskpdsvud6etlmdwpjxb.png\"\r\n    \r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/game",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"game"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "add games",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{teachertoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "\r\n    {\"grade\": \"666b510e00af65249616e250\",\r\n    \"subject\": \"66b3d6bf935d0e0a6cf48f92\",\r\n\r\n    \"topic\": \"66b3dcff6d5a262329f94792\",\r\n    \"score\":10,\r\n    \"image\":\"http://res.cloudinary.com/deiylfley/image/upload/v1723824481/iskpdsvud6etlmdwpjxb.png\"\r\n    \r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{1}}/game",
+									"host": [
+										"{{1}}"
+									],
+									"path": [
+										"game"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "452"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1c4-0D+nf2eg8C8WHgPFFRbo+bo0DuI\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 16:08:31 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"messgae\": \"Game added successfully\",\n    \"data\": {\n        \"createdBy\": \"666d92ed204678a7b0d4aa5a\",\n        \"grade\": \"666b510e00af65249616e250\",\n        \"topic\": \"66b3dcff6d5a262329f94792\",\n        \"subject\": \"66b3d6bf935d0e0a6cf48f92\",\n        \"image\": \"http://res.cloudinary.com/deiylfley/image/upload/v1723824481/iskpdsvud6etlmdwpjxb.png\",\n        \"status\": \"pending\",\n        \"score\": 10,\n        \"_id\": \"66bf797f8e0947d81cb9f42f\",\n        \"createdAt\": \"2024-08-16T16:08:31.551Z\",\n        \"updatedAt\": \"2024-08-16T16:08:31.551Z\",\n        \"__v\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "get games",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{studenttoken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{2}}/game?grade=666b510e00af65249616e250",
+							"host": [
+								"{{2}}"
+							],
+							"path": [
+								"game"
+							],
+							"query": [
+								{
+									"key": "grade",
+									"value": "666b510e00af65249616e250"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var d= pm.response.json().data\r",
+							"pm.collectionVariables.set(\"admintoken\", \"Bearer \"+d.token); \r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"userName\":\"admin\",\r\n      \"password\":\"admin\"\r\n      \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{1}}/auth/login",
+					"host": [
+						"{{1}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "login",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"userName\":\"testing\",\r\n      \"password\":\"321321\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{1}}/auth/login",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1374"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"55e-mdrOsT/4fpQnH0KWuj3JfwFhJ3k\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 04 Jun 2024 11:18:43 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"data\": {\n        \"_id\": \"665edc746c0cac0bc47c5c54\",\n        \"fullName\": \"abc\",\n        \"userName\": \"testing\",\n        \"email\": \"testing@yopmail.com\",\n        \"password\": \"$2b$10$rPMv3Fb4uvpP2MEJMcCG2OfJ4lnHUDLEDwW7Rlf81mG/HlCc6VVq6\",\n        \"userType\": \"parent\",\n        \"fullAddress\": \"abc\",\n        \"profile\": {\n            \"_id\": \"665edc746c0cac0bc47c5c56\",\n            \"auth\": \"665edc746c0cac0bc47c5c54\",\n            \"childIds\": [\n                \"665e3899b82643a6cb4eed4c\"\n            ],\n            \"prtId\": \"940407\",\n            \"createdAt\": \"2024-06-04T09:20:53.195Z\",\n            \"updatedAt\": \"2024-06-04T09:20:53.195Z\",\n            \"__v\": 0\n        },\n        \"createdAt\": \"2024-06-04T09:20:53.051Z\",\n        \"updatedAt\": \"2024-06-04T09:20:53.051Z\",\n        \"__v\": 0,\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY2NWVkYzc0NmMwY2FjMGJjNDdjNWM1NCIsImZ1bGxOYW1lIjoiYWJjIiwidXNlck5hbWUiOiJ0ZXN0aW5nIiwiZW1haWwiOiJ0ZXN0aW5nQHlvcG1haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkclBNdjNGYjR1dnBQMk1FSk1jQ0cyT2ZKNGxuSFVETEVEd1c3UmxmODFtRy9IbENjNlZWcTYiLCJ1c2VyVHlwZSI6InBhcmVudCIsImZ1bGxBZGRyZXNzIjoiYWJjIiwicHJvZmlsZSI6eyJfaWQiOiI2NjVlZGM3NDZjMGNhYzBiYzQ3YzVjNTYiLCJhdXRoIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU0IiwiY2hpbGRJZHMiOlsiNjY1ZTM4OTliODI2NDNhNmNiNGVlZDRjIl0sInBydElkIjoiOTQwNDA3IiwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4xOTVaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4xOTVaIiwiX192IjowfSwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwiX192IjowfSwiaWF0IjoxNzE3NDk5OTIzfQ.5QDBnTmgow4O6oxKe7oHrlKx7mnNqg4OW5x-9GWA8G8\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "upload image",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/D:/Geekslogicity/classerly/images/1.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{1}}/uploadimage",
+					"host": [
+						"{{1}}"
+					],
+					"path": [
+						"uploadimage"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "upload image",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/D:/pexels-photo-3314294.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{1}}/upload",
+							"host": [
+								"{{1}}"
+							],
+							"path": [
+								"upload"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "62"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"3e-Ra2NT2A10MVr/vz8iFCPoqJUQFU\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 04 Jun 2024 14:51:50 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"file\": \"1717512710189-worktJourneyReplay.png\"\n}"
+				}
+			]
+		},
+		{
+			"name": "get image",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/uploads/Science/A1/A1.1.docx",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"uploads",
+						"Science",
+						"A1",
+						"A1.1.docx"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "1",
+			"value": "localhost:8080/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImF1dGgiOnsiX2lkIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU0IiwiZnVsbE5hbWUiOiJhYmMiLCJ1c2VyTmFtZSI6InRlc3RpbmciLCJlbWFpbCI6InRlc3RpbmdAeW9wbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRyUE12M0ZiNHV2cFAyTUVKTWNDRzJPZko0bG5IVURMRUR3VzdSbGY4MW1HL0hsQ2M2VlZxNiIsInVzZXJUeXBlIjoicGFyZW50IiwiZnVsbEFkZHJlc3MiOiJhYmMiLCJwcm9maWxlIjoiNjY1ZWRjNzQ2YzBjYWMwYmM0N2M1YzU2IiwiY3JlYXRlZEF0IjoiMjAyNC0wNi0wNFQwOToyMDo1My4wNTFaIiwidXBkYXRlZEF0IjoiMjAyNC0wNi0wNFQxMTozMjo0Ni4zMDlaIiwiX192IjowLCJvdHAiOiI5MTkzNjkifSwidHlwZSI6ImZvcmdvdFBhc3N3b3JkIn0sImlhdCI6MTcxNzUwMjk1NH0.7aVGILG880NwabEUP5NIsbK3yF5NaB2JxlJCAf-01yQ",
+			"type": "string"
+		},
+		{
+			"key": "admintoken",
+			"value": ""
+		},
+		{
+			"key": "teachertoken",
+			"value": ""
+		},
+		{
+			"key": "studenttoken",
+			"value": ""
+		},
+		{
+			"key": "2",
+			"value": "https://classerly-c7ee10cd4558.herokuapp.com/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "parenttoken",
+			"value": ""
+		}
+	]
+}

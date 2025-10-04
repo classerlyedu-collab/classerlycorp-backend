@@ -11,7 +11,7 @@ const AuthSchema = new Schema(
     isBlocked: { type: Boolean, default: false },
     userType: {
       type: String,
-      enum: ["Admin", "HR-Admin", "Employee", "Supervisor"],
+      enum: ["Admin", "HR-Admin", "Employee", "Supervisor", "Instructor"],
     },
     profile: {
       type: mongoose.Schema.Types.ObjectId,

@@ -20,7 +20,7 @@ const commentSchema = new Schema(
     },
     userType: {
       type: String,
-      enum: ["Admin", "HR-Admin", "Employee", "Supervisor"],
+      enum: ["Admin", "HR-Admin", "Employee", "Supervisor", "Instructor"],
       required: true
     },
     // Reference to the other party in the conversation
@@ -31,7 +31,7 @@ const commentSchema = new Schema(
     },
     recipientType: {
       type: String,
-      enum: ["Admin", "HR-Admin", "Employee", "Supervisor"],
+      enum: ["Admin", "HR-Admin", "Employee", "Supervisor", "Instructor"],
       required: true
     }
   },

@@ -808,15 +808,21 @@ exports.addLesson = asyncHandler(async (req, res) => {
     } else if (Array.isArray(hrAdminIds) && hrAdminIds.length > 0) {
       targetHrAdmins = await hrAdminModel.find({ _id: { $in: hrAdminIds } }, '_id');
     } else {
-      // If no HR-Admins specified, find the topic's creator
+      // If no HR-Admins specified, find the topic's creator; support Instructor by mapping to linked HR-Admins
       const topicData = await topicModel.findById(topic).populate('subject');
       if (topicData && topicData.subject && topicData.subject.createdBy) {
         targetHrAdmins = [{ _id: topicData.subject.createdBy }];
       } else {
-        return res.status(400).json({
-          success: false,
-          message: "No HR-Admins specified and topic creator not found"
-        });
+        const InstructorModel = require('../models/instructor');
+        const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+        if (instructor && instructor.hrAdmins && instructor.hrAdmins.length > 0) {
+          targetHrAdmins = instructor.hrAdmins.map((id) => ({ _id: id }));
+        } else {
+          return res.status(400).json({
+            success: false,
+            message: "No HR-Admins specified and topic creator not found"
+          });
+        }
       }
     }
 

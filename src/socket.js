@@ -181,6 +181,8 @@ const initializeSocket = (server) => {
             }
         });
 
+        // Discussion rooms removed per requirements
+
         socket.on('disconnect', () => {
             // User disconnected
         });

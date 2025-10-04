@@ -3,7 +3,7 @@ const EmployeeModel = require("../models/employee");
 const HRAdminModel = require("../models/hr-admin");
 const authModel = require("../models/auth");
 const asyncHandler = require("../utils/asyncHandler");
-const { generateSixDigitCode, generateOTP, generateEmployeeCode } = require("../utils/generateotp");
+const { generateSixDigitCode, generateOTP, generateEmployeeCode, generateInstructorCode } = require("../utils/generateotp");
 const sendEmail = require("../utils/sendemail");
 const { tokengenerate } = require("../middlewares/auth");
 const { default: mongoose } = require("mongoose");
@@ -14,6 +14,7 @@ const supervisorModel = require("../models/supervisor");
 const hrAdminModel = require("../models/hr-admin");
 const subjectModel = require("../models/subject");
 const NotificationModel = require("../models/notification");
+const InstructorModel = require("../models/instructor");
 const validatesubjectforStudent = async (subject) => {
   let subjectData
   if (subject && subject.length > 0) {
@@ -359,8 +360,16 @@ exports.register = asyncHandler(async (req, res) => {
         auth: auth._id,
         code: generateSixDigitCode(),
       });
+    } else if (userType == "Instructor") {
+      const instructorCode = await generateInstructorCode(InstructorModel);
+      profile = new InstructorModel({ auth: auth._id, code: instructorCode, subjects: subject || [] });
+
+      const emailsubject = "Instructor Registration";
+      const message = `You are registered successfully. Your instructor code is ${instructorCode}. Share this code with your HR-Admin to be added.`;
+      const requestType = "Your request for instructor registration is done";
+      await sendEmail(emailsubject, email, message, requestType);
     } else {
-      throw Error("UserType must be Student, Teacher or Parent");
+      throw Error("UserType must be Employee, HR-Admin, Supervisor, Admin or Instructor");
     }
     auth.profile = profile._id;
     // Removed auto-notification on signup per requirements

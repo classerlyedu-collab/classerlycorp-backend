@@ -85,9 +85,10 @@ const verifyteachertoken = (req, res, next) => {
 
     if (
       decoded.user.userType !== "HR-Admin" &&
-      decoded.user.userType !== "Admin"
+      decoded.user.userType !== "Admin" &&
+      decoded.user.userType !== "Instructor"
     ) {
-      return res.status(200).send({ message: "Only HR-Admin have credentials" });
+      return res.status(200).send({ message: "Only HR-Admin or Instructor have credentials" });
     }
     req.user = decoded.user;
   } catch (err) {

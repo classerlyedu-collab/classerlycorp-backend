@@ -19,7 +19,12 @@ const {
     updateEmployeeRequestSubjects,
     assignEmployeeSubjects,
     getEmployeeSubjectData,
-    getEmployeeBySubject
+    getEmployeeBySubject,
+    addinstructor,
+    removeInstructor,
+    getMyInstructorRequests,
+    updateInstructorRequest,
+    instructorDashboard
 } = require('../controllers/HRAdminController');
 const { getnotification } = require('../controllers/supervisor.controllers');
 const { verifytoken, verifyteachertoken, verifyHRAdminSubscription } = require('../middlewares/auth');
@@ -29,6 +34,8 @@ const router = Router();
 
 // Feedback routes removed
 router.route("/dashboard").get(verifytoken, verifyHRAdminSubscription, mydashboard);
+// Instructor dashboard metrics (no subscription required)
+router.route('/instructor/dashboard').get(verifytoken, instructorDashboard);
 router.route('/getNotification').get(verifytoken, getnotification);
 // Subscription (no subscription check needed)
 router.route('/subscription').get(verifytoken, getMySubscription);
@@ -40,6 +47,9 @@ router.route("/mysubjects").get(verifyteachertoken, verifyHRAdminSubscription, m
 router.route("/myemployees").get(verifyteachertoken, verifyHRAdminSubscription, myemployees);
 router.route("/addstudent").post(verifyteachertoken, verifyHRAdminSubscription, addstudent);
 router.route("/addemployee").post(verifyteachertoken, verifyHRAdminSubscription, addstudent);
+// Instructor linking
+router.route("/addinstructor").post(verifyteachertoken, verifyHRAdminSubscription, addinstructor);
+router.route("/instructor/:instructorId").delete(verifyteachertoken, verifyHRAdminSubscription, removeInstructor);
 router.route("/employee/:employeeId").delete(verifyteachertoken, verifyHRAdminSubscription, removeEmployee);
 
 // Parent-Teacher Feedback Routes removed
@@ -57,7 +67,7 @@ router.route("/comments/:recipientId").get(verifytoken, verifyHRAdminSubscriptio
 // Employee Requests Routes
 router.route("/requests").get(verifytoken, verifyHRAdminSubscription, getEmployeeRequests);
 router.route("/requests/:requestId/cancel").delete(verifytoken, verifyHRAdminSubscription, cancelEmployeeRequest);
-router.route("/requests/:requestId/delete").delete(verifytoken, verifyHRAdminSubscription, deleteEmployeeRequest);
+router.route("/requests/:requestId/delete").delete(verifytoken, deleteEmployeeRequest);
 router.route("/requests/:requestId/subjects").put(verifytoken, verifyHRAdminSubscription, updateEmployeeRequestSubjects);
 
 // Direct Employee Subject Assignment Route
@@ -66,5 +76,9 @@ router.route("/employees/:employeeId/subjects").put(verifyteachertoken, verifyHR
 // Employee Data Routes for HR-Admin
 router.route("/employees/:employeeId/subjectdata").get(verifyteachertoken, verifyHRAdminSubscription, getEmployeeSubjectData);
 router.route("/employees/:employeeId/bysubject").get(verifyteachertoken, verifyHRAdminSubscription, getEmployeeBySubject);
+
+// Instructor self-service endpoints (accessed by Instructor role)
+router.route("/instructor/requests").get(verifytoken, getMyInstructorRequests);
+router.route("/instructor/requests/:id").put(verifytoken, updateInstructorRequest);
 
 module.exports = router;

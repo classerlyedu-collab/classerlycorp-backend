@@ -36,4 +36,22 @@ async function generateEmployeeCode(employeeModel) {
   throw new Error('Unable to generate unique employee code after multiple attempts');
 }
 
-module.exports = { generateSixDigitCode, generateOTP, generateEmployeeCode };
+// Generate instructor code in format INS-XXXXXX with uniqueness check
+async function generateInstructorCode(instructorModel) {
+  const maxAttempts = 10;
+  let attempts = 0;
+  while (attempts < maxAttempts) {
+    const randomCode = Math.floor(100000 + Math.random() * 900000);
+    const instructorCode = `INS-${randomCode}`;
+    try {
+      const existing = await instructorModel.findOne({ code: instructorCode });
+      if (!existing) return instructorCode;
+      attempts++;
+    } catch (error) {
+      throw new Error('Error checking code uniqueness: ' + error.message);
+    }
+  }
+  throw new Error('Unable to generate unique instructor code after multiple attempts');
+}
+
+module.exports = { generateSixDigitCode, generateOTP, generateEmployeeCode, generateInstructorCode };

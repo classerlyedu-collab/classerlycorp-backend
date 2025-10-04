@@ -24,10 +24,14 @@ exports.addquiz = asyncHandler(async (req, res) => {
       createForAll
     } = req.body;
 
-    // Find the HR-Admin record using the auth user's ID
-    const hrAdmin = await hrAdminModel.findOne({ auth: req.user._id });
+    // Resolve acting HR-Admin (support Instructors)
+    let hrAdmin = await hrAdminModel.findOne({ auth: req.user._id });
     if (!hrAdmin) {
-      throw new Error("HR-Admin record not found");
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(403).json({ success: false, message: 'Link to an HR-Admin is required to create quizzes' });
+      }
     }
 
     let targetHrAdmins = [];
@@ -36,8 +40,12 @@ exports.addquiz = asyncHandler(async (req, res) => {
     } else if (Array.isArray(hrAdminIds) && hrAdminIds.length > 0) {
       targetHrAdmins = await hrAdminModel.find({ _id: { $in: hrAdminIds } }, '_id');
     } else {
-      // fallback: current HR-Admin
-      targetHrAdmins = [hrAdmin];
+      // fallback: current HR-Admin or instructor's linked HR-Admins
+      if (hrAdmin) targetHrAdmins = [hrAdmin]; else {
+        const InstructorModel = require('../models/instructor');
+        const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+        targetHrAdmins = (instructor?.hrAdmins || []).map((id) => ({ _id: id }));
+      }
     }
 
     const created = [];
@@ -219,11 +227,15 @@ exports.deletequiz = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Check if quiz exists and belongs to the teacher
-    const quizdata = await QuizesModel.findOne({
-      _id: id,
-      createdBy: req.user?.profile?._id,
-    });
+    // Check if quiz exists and belongs to the teacher or any HR-Admin linked to an Instructor
+    let quizdata = await QuizesModel.findOne({ _id: id, createdBy: req.user?.profile?._id });
+    if (!quizdata && req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (instructor && instructor.hrAdmins && instructor.hrAdmins.length > 0) {
+        quizdata = await QuizesModel.findOne({ _id: id, createdBy: { $in: instructor.hrAdmins } });
+      }
+    }
 
     if (!quizdata) {
       throw new Error("Quiz not found or you don't have permission to delete it");
@@ -340,6 +352,18 @@ exports.updatestatusquiz = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.query;
+    const employeeId = req.user?.profile?._id;
+
+    // For employees, verify they are linked to an HR-Admin
+    if (req.user.userType === 'Employee') {
+      const hrAdmin = await hrAdminModel.findOne({ employees: employeeId });
+      if (!hrAdmin) {
+        return res.status(403).json({
+          success: false,
+          message: "You are not linked to any HR-Admin"
+        });
+      }
+    }
 
     const quizdata = await QuizesModel.findById(id).populate("questions");
     if (!quizdata) {
@@ -501,6 +525,15 @@ exports.getquizes = asyncHandler(async (req, res) => {
         quizQuery.createdBy = req.user.profile._id;
       }
     }
+    // For Instructors, show quizzes created by any linked HR-Admin
+    else if (req.user.userType === "Instructor") {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.send({ success: true, data: [], message: "No quizzes available" });
+      }
+      quizQuery.createdBy = { $in: instructor.hrAdmins };
+    }
     // For employees, filter by HR-Admin ownership AND assigned subjects
     else if (req.user.userType === "Employee") {
       // Find which HR-Admin this employee belongs to
@@ -601,9 +634,23 @@ exports.getquizes = asyncHandler(async (req, res) => {
 exports.getMyQuizesByResult = asyncHandler(async (req, res) => {
   try {
     const { result } = req.query
+    const employeeId = req.user?.profile?._id;
+
+    // For employees, verify they are linked to an HR-Admin
+    if (req.user.userType === 'Employee') {
+      const hrAdmin = await hrAdminModel.findOne({ employees: employeeId });
+      if (!hrAdmin) {
+        return res.status(200).json({
+          success: true,
+          data: [],
+          message: "No quizzes available. You are not linked to any HR-Admin."
+        });
+      }
+    }
+
     let data = await EmployeeQuizesModel.find({
       result,
-      employee: req.user?.profile?._id,
+      employee: employeeId,
     }, { questions: 0, answers: 0 })
       .populate({
         path: "quiz"

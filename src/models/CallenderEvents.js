@@ -21,7 +21,7 @@ const CallenderEventsSchema = new mongoose.Schema({
     },
     userType: {
         type: String,
-        enum: ["Admin", "HR-Admin", "Employee", "Supervisor"],
+        enum: ["Admin", "HR-Admin", "Employee", "Supervisor", "Instructor"],
         required: true
     },
     agenda: {

@@ -7,12 +7,25 @@ const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 exports.mysubjects = async (req, res) => {
   try {
+    const employeeId = req.user?.profile?._id;
+
+    // First check if employee is linked to any HR-Admin
+    const hrAdmin = await hrAdminModel.findOne({ employees: employeeId });
+    if (!hrAdmin) {
+      return res.status(200).json({
+        success: true,
+        data: [],
+        message: "No subjects available. You are not linked to any HR-Admin."
+      });
+    }
+
     let data = await employeeModel
-      .findOne({ _id: req.user?.profile?._id })
+      .findOne({ _id: employeeId })
       .populate({ path: "subjects", select: ["name", "image"] });
+
     return res.send({
       success: true,
-      data: data.subjects,
+      data: data?.subjects || [],
       message: "subjects get Successfully",
     });
   } catch (error) {
@@ -50,6 +63,14 @@ exports.getmyrequests = async (req, res) => {
       .populate({
         path: "hrAdmin",
         select: "auth",
+        populate: {
+          path: "auth",
+          select: ["userName", "fullName", "email", "image", "fullAddress"],
+        },
+      })
+      .populate({
+        path: "instructor",
+        select: "auth code",
         populate: {
           path: "auth",
           select: ["userName", "fullName", "email", "image", "fullAddress"],
@@ -144,14 +165,36 @@ exports.updaterequest = async (req, res) => {
 
 exports.getmyteacher = async (req, res) => {
   try {
-    let data = await hrAdminModel
-      .find({
-        employees: { $in: req.user.profile._id },
-      }, { auth: 1 })
+    // HR-Admins who manage this employee
+    const hrAdmins = await hrAdminModel
+      .find({ employees: { $in: req.user.profile._id } }, { auth: 1 })
       .populate({ path: "auth", select: "-password" });
+
+    // Instructors linked via accepted requests for this employee
+    const instructorRequests = await hrAdminEmployeeRequestModel
+      .find({
+        employee: req.user.profile._id,
+        status: "Complete",
+        instructor: { $exists: true, $ne: null }
+      })
+      .populate({ path: 'instructor', select: 'auth', populate: { path: 'auth', select: '-password' } });
+
+    const instructors = [];
+    const seenInstructorIds = new Set();
+    for (const reqDoc of instructorRequests) {
+      const ins = reqDoc.instructor;
+      if (ins && ins._id && !seenInstructorIds.has(String(ins._id))) {
+        seenInstructorIds.add(String(ins._id));
+        instructors.push(ins);
+      }
+    }
+
+    // Combine and return unified list
+    const team = [...hrAdmins, ...instructors];
+
     return res.send({
       success: true,
-      data,
+      data: team,
       message: "Team members get successfully",
     });
   } catch (error) {

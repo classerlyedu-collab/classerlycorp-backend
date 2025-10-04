@@ -13,6 +13,12 @@ const hrAdminSchema = new Schema(
         ref: "Employee"
       }
     ],
+    instructors: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Instructor"
+      }
+    ],
     subjects: [
       {
         type: mongoose.Schema.Types.ObjectId,

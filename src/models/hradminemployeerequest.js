@@ -7,6 +7,10 @@ const hrAdminEmployeeRequestSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "HR-Admin",
     },
+    instructor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Instructor",
+    },
     status: {
       type: String,
       enum: ["Pending", "Complete", "Rejected"],

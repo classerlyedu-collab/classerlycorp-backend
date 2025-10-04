@@ -81,10 +81,18 @@ exports.AddSubject = asyncHandler(async (req, res) => {
     } else if (Array.isArray(hrAdminIds) && hrAdminIds.length > 0) {
       targetHrAdmins = await hrAdminModel.find({ _id: { $in: hrAdminIds } }, '_id');
     } else {
-      // fallback: current HR-Admin
-      const current = await hrAdminModel.findOne({ auth: req.user._id }, '_id');
-      if (!current) throw new Error('HR-Admin record not found');
-      targetHrAdmins = [current];
+      // fallback: current creator. If Instructor, resolve their linked HR-Admins and create for those; if HR-Admin, self
+      const currentHR = await hrAdminModel.findOne({ auth: req.user._id }, '_id');
+      if (currentHR) {
+        targetHrAdmins = [currentHR];
+      } else {
+        const InstructorModel = require('../models/instructor');
+        const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+        if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+          return res.status(403).json({ success: false, message: 'Link to an HR-Admin is required to create content' });
+        }
+        targetHrAdmins = instructor.hrAdmins.map((id) => ({ _id: id }));
+      }
     }
 
     const created = [];
@@ -93,7 +101,13 @@ exports.AddSubject = asyncHandler(async (req, res) => {
       if (duplicate) continue;
       const newSubject = await new subjectModel({ name: nameLc, image, createdBy: admin._id }).save();
       await hrAdminModel.findByIdAndUpdate(admin._id, { $addToSet: { subjects: newSubject._id } });
-      created.push(newSubject);
+
+      // Populate the subject with necessary fields for frontend
+      const populatedSubject = await subjectModel.findById(newSubject._id)
+        .populate('topics')
+        .populate('createdBy', 'name email');
+
+      created.push(populatedSubject);
     }
 
     // If creating for all HR-Admins, add to global subjects tracking
@@ -354,20 +368,27 @@ exports.syncGlobalContentForAllHRAdmins = asyncHandler(async (req, res) => {
 
 exports.getAllSubjects = asyncHandler(async (req, res) => {
   try {
-    // Find the HR-Admin record using the auth user's ID
+    // HR-Admin: return own subjects. Instructor: union of linked HR-Admins' subjects. Others: empty.
     const hrAdmin = await hrAdminModel.findOne({ auth: req.user._id });
-    if (!hrAdmin) {
-      return res.status(404).json({
-        success: false,
-        message: "HR-Admin record not found"
-      });
+    let subjects = [];
+    if (hrAdmin) {
+      subjects = await subjectModel.find({ createdBy: hrAdmin._id })
+        .populate('topics')
+        .populate('createdBy', 'name email')
+        .sort({ createdAt: -1 });
+    } else if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: true, message: 'No linked HR-Admins', data: [] });
+      }
+      subjects = await subjectModel.find({ createdBy: { $in: instructor.hrAdmins } })
+        .populate('topics')
+        .populate('createdBy', 'name email')
+        .sort({ createdAt: -1 });
+    } else {
+      return res.status(200).json({ success: true, data: [] });
     }
-
-    // Only return subjects created by the current HR-Admin
-    const subjects = await subjectModel.find({ createdBy: hrAdmin._id })
-      .populate('topics')
-      .populate('createdBy', 'name email')
-      .sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
@@ -396,14 +417,20 @@ exports.deleteSubject = asyncHandler(async (req, res) => {
       });
     }
 
-    // Find the HR-Admin record to verify ownership
-    const hrAdmin = await hrAdminModel.findOne({ auth: req.user._id });
-
-    if (!hrAdmin || data.createdBy.toString() !== hrAdmin._id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: "You don't have permission to delete this subject"
-      });
+    // Verify ownership: allow HR-Admin or Instructor linked to the owning HR-Admin
+    let hrAdmin = await hrAdminModel.findOne({ auth: req.user._id });
+    if (hrAdmin) {
+      if (data.createdBy.toString() !== hrAdmin._id.toString()) {
+        return res.status(403).json({ success: false, message: "You don't have permission to delete this subject" });
+      }
+    } else if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !(instructor.hrAdmins || []).some(id => String(id) === String(data.createdBy))) {
+        return res.status(403).json({ success: false, message: "You don't have permission to delete this subject" });
+      }
+    } else {
+      return res.status(403).json({ success: false, message: "You don't have permission to delete this subject" });
     }
 
     // Delete all topics and their lessons
@@ -457,9 +484,19 @@ exports.updateSubject = asyncHandler(async (req, res) => {
       return res.status(200).json({ success: false, message: "invalid id" });
     }
 
-    // Verify ownership (HR-Admin who created it)
-    const hrAdmin = await hrAdminModel.findOne({ auth: req.user._id });
-    if (!hrAdmin || subject.createdBy.toString() !== hrAdmin._id.toString()) {
+    // Verify ownership (HR-Admin who created it) or Instructor linked to owning HR-Admin
+    let hrAdmin = await hrAdminModel.findOne({ auth: req.user._id });
+    if (hrAdmin) {
+      if (subject.createdBy.toString() !== hrAdmin._id.toString()) {
+        return res.status(403).json({ success: false, message: "You don't have permission to update this subject" });
+      }
+    } else if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !(instructor.hrAdmins || []).some(id => String(id) === String(subject.createdBy))) {
+        return res.status(403).json({ success: false, message: "You don't have permission to update this subject" });
+      }
+    } else {
       return res.status(403).json({ success: false, message: "You don't have permission to update this subject" });
     }
 

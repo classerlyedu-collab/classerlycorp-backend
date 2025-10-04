@@ -9,6 +9,8 @@ const hrAdminEmployeeRequestModel = require("../models/hradminemployeerequest");
 const topicModel = require("../models/topic");
 const { default: mongoose } = require("mongoose");
 const employeeModel = require("../models/employee");
+const InstructorModel = require("../models/instructor");
+const hrAdminInstructorRequestModel = require("../models/hradmininstructorrequest");
 const EmployeeQuizesModel = require("../models/employeequizes");
 const CallenderEvents = require("../models/CallenderEvents");
 const commentModel = require("../models/comment");
@@ -133,72 +135,100 @@ exports.myemployees = async (req, res) => {
     const EmployeeQuizesModel = require("../models/employeequizes");
 
     let data;
-    try {
-      data = await HRAdminModel
-        .findOne(
-          {
-            _id: req.user?.profile?._id,
-          },
-          { employees: 1 }
-        )
-        .populate({
-          path: "employees",
-          select: "auth",
-          populate: {
-            path: "auth",
-            select: ["userName", "fullName", "email", "image", "fullAddress"],
-          },
-        })
-        .populate({
-          path: "employees",
-          select: ["auth", "code", "supervisor"],
-          populate: [
-            {
-              path: "subjects",
-              select: ["image", "name"]
+    const isHR = req.user.userType === 'HR-Admin';
+    const isInstructor = req.user.userType === 'Instructor';
+
+    if (isHR) {
+      try {
+        data = await HRAdminModel
+          .findOne(
+            { _id: req.user?.profile?._id },
+            { employees: 1, instructors: 1 }
+          )
+          .populate({
+            path: "employees",
+            select: "auth",
+            populate: {
+              path: "auth",
+              select: ["userName", "fullName", "email", "image", "fullAddress"],
             },
-            {
-              path: "supervisor",
-              select: ["_id"],
-              populate: {
-                path: "auth",
-                select: ["fullName"]
+          })
+          .populate({
+            path: "employees",
+            select: ["auth", "code", "supervisor"],
+            populate: [
+              { path: "subjects", select: ["image", "name"] },
+              {
+                path: "supervisor",
+                select: ["_id"],
+                populate: { path: "auth", select: ["fullName"] }
               }
-            }
-          ],
-        });
-    } catch (populationError) {
-      console.error("Error populating supervisor data:", populationError);
-      // Fallback to basic employee data without supervisor
-      data = await HRAdminModel
-        .findOne(
-          {
-            _id: req.user?.profile?._id,
-          },
-          { employees: 1 }
-        )
+            ],
+          })
+          .populate({
+            path: "instructors",
+            select: ["auth", "code"],
+            populate: { path: "auth", select: ["userName", "fullName", "email", "image"] }
+          });
+      } catch (populationError) {
+        console.error("Error populating supervisor data:", populationError);
+        data = await HRAdminModel
+          .findOne(
+            { _id: req.user?.profile?._id },
+            { employees: 1, instructors: 1 }
+          )
+          .populate({
+            path: "employees",
+            select: "auth",
+            populate: { path: "auth", select: ["userName", "fullName", "email", "image", "fullAddress"] },
+          })
+          .populate({
+            path: "employees",
+            select: ["auth", "code"],
+            populate: [{ path: "subjects", select: ["image", "name"] }],
+          })
+          .populate({
+            path: "instructors",
+            select: ["auth", "code"],
+            populate: { path: "auth", select: ["userName", "fullName", "email", "image"] }
+          });
+      }
+    } else if (isInstructor) {
+      // Collect employees across all linked HR-Admins
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: true, data: [], message: "You have no employees" });
+      }
+
+      // Get HR-Admins with employees and merge lists
+      const hrAdmins = await HRAdminModel
+        .find({ _id: { $in: instructor.hrAdmins } }, { employees: 1 })
         .populate({
           path: "employees",
-          select: "auth",
-          populate: {
-            path: "auth",
-            select: ["userName", "fullName", "email", "image", "fullAddress"],
-          },
-        })
-        .populate({
-          path: "employees",
-          select: ["auth", "code"],
+          select: ["auth", "code", "supervisor", "subjects"],
           populate: [
-            {
-              path: "subjects",
-              select: ["image", "name"]
-            }
-          ],
+            { path: "auth", select: ["userName", "fullName", "email", "image", "fullAddress"] },
+            { path: "subjects", select: ["image", "name"] },
+            { path: "supervisor", select: ["_id"], populate: { path: 'auth', select: ['fullName'] } }
+          ]
         });
+
+      const employeeMap = new Map();
+      hrAdmins.forEach(hr => {
+        (hr.employees || []).forEach(emp => {
+          employeeMap.set(String(emp._id), emp);
+        });
+      });
+
+      data = { employees: Array.from(employeeMap.values()) };
+    } else {
+      return res.status(200).json({ success: true, data: [], message: "You have no employees" });
     }
 
-    if (data?.employees?.length > 0) {
+    if ((data?.employees?.length || 0) > 0 || (data?.instructors?.length || 0) > 0) {
       let val = [];
+      let instructorsList = [];
 
       // Process each employee
       for (let i = 0; i < data.employees.length; i++) {
@@ -300,15 +330,24 @@ exports.myemployees = async (req, res) => {
         val.push(employeeData);
       }
 
+      // Prepare instructors list (simple projection, no progress)
+      if (data.instructors && data.instructors.length > 0) {
+        instructorsList = data.instructors.map((ins) => ({
+          _id: ins._id,
+          code: ins.code,
+          auth: ins.auth,
+        }));
+      }
+
       return res.status(200).json({
         success: true,
-        data: val,
-        message: "Employees retrieved successfully",
+        data: { employees: val, instructors: instructorsList },
+        message: "Employees and instructors retrieved successfully",
       });
     } else {
       return res
         .status(200)
-        .json({ success: true, data: [], message: "You have no employees" });
+        .json({ success: true, data: { employees: [], instructors: [] }, message: "You have no employees or instructors" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message || "Something went wrong" });
@@ -324,12 +363,23 @@ exports.addstudent = async (req, res) => {
         .json({ success: false, message: "Employee ID is required" });
     }
 
-    // Allow HR-Admin and Supervisor users to add employees
-    if (req.user.userType !== 'HR-Admin' && req.user.userType !== 'Supervisor') {
-      return res.status(200).json({
-        success: false,
-        message: "Only HR-Admin and Supervisor can add employees"
-      });
+    // Determine acting HR-Admin context
+    let actingHrAdminId = null;
+    if (req.user.userType === 'HR-Admin') {
+      actingHrAdminId = req.user.profile._id;
+    } else if (req.user.userType === 'Supervisor') {
+      // Supervisor adds under the HR-Admin that manages the employee (validated below per request)
+      actingHrAdminId = req.user.profile._id; // preserved legacy behavior
+    } else if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }).select('hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(403).json({ success: false, message: 'Instructor must be linked to an HR-Admin to add employees' });
+      }
+      // Use first linked HR-Admin as acting context by default AND mark request as initiated by Instructor
+      actingHrAdminId = instructor.hrAdmins[0];
+    } else {
+      return res.status(200).json({ success: false, message: "Only HR-Admin, Instructor or Supervisor can add employees" });
     }
 
     stdId.map(async (i, index) => {
@@ -340,7 +390,7 @@ exports.addstudent = async (req, res) => {
           .json({ success: false, message: "Invalid Employee ID" });
       } else {
         let alreadyregisted = await hrAdminEmployeeRequestModel.findOne({
-          hrAdmin: req.user.profile._id,
+          hrAdmin: actingHrAdminId,
           employee: std._id,
         });
         if (alreadyregisted) {
@@ -360,11 +410,14 @@ exports.addstudent = async (req, res) => {
               .json({ success: false, message: "Already an employee" });
           }
         }
-        let str = await new hrAdminEmployeeRequestModel({
-          hrAdmin: req.user.profile._id,
+        const basePayload = {
+          hrAdmin: actingHrAdminId,
           employee: std._id,
           subjects: subjects
-        }).save();
+        };
+        // If initiated by Instructor, include instructor reference for downstream UI
+        const payload = req.user.userType === 'Instructor' ? { ...basePayload, instructor: req.user.profile._id } : basePayload;
+        await new hrAdminEmployeeRequestModel(payload).save();
       }
       if (index == stdId.length - 1) {
         return res
@@ -379,6 +432,121 @@ exports.addstudent = async (req, res) => {
     });
   }
 };
+
+// Add instructor by instructor code (similar to addstudent)
+exports.addinstructor = asyncHandler(async (req, res) => {
+  try {
+    const { instructorCodes = [], subjects = [] } = req.body;
+    if (!instructorCodes || instructorCodes.length === 0) {
+      return res.status(200).json({ success: false, message: "Instructor code is required" });
+    }
+
+    // Only HR-Admin can add instructors
+    if (req.user.userType !== 'HR-Admin') {
+      return res.status(200).json({ success: false, message: "Only HR-Admin can add instructors" });
+    }
+
+    for (let index = 0; index < instructorCodes.length; index++) {
+      const code = instructorCodes[index];
+      const instructor = await InstructorModel.findOne({ code });
+      if (!instructor) {
+        return res.status(200).json({ success: false, message: "Invalid Instructor Code" });
+      }
+
+      const existing = await hrAdminInstructorRequestModel.findOne({
+        hrAdmin: req.user.profile._id,
+        instructor: instructor._id,
+      });
+      if (existing) {
+        if (existing.status === 'Pending' || existing.status === 'Rejected') {
+          return res.status(200).json({ success: false, message: "Already applied for addition" });
+        } else {
+          return res.status(200).json({ success: false, message: "Already an instructor" });
+        }
+      }
+
+      await new hrAdminInstructorRequestModel({
+        hrAdmin: req.user.profile._id,
+        instructor: instructor._id,
+        subjects: subjects
+      }).save();
+    }
+
+    return res.status(200).json({ success: true, message: "Instructor request(s) sent successfully" });
+  } catch (error) {
+    return res.status(200).json({ success: false, message: error.message || "Something went wrong" });
+  }
+});
+
+// HR-Admin can remove linked instructor
+exports.removeInstructor = asyncHandler(async (req, res) => {
+  try {
+    const { instructorId } = req.params;
+    // Only HR-Admin (or Admin) can remove a linked instructor
+    if (req.user.userType !== 'HR-Admin' && req.user.userType !== 'Admin') {
+      return res.status(200).json({ success: false, message: 'Only HR-Admin or Admin can remove an instructor' });
+    }
+
+    const hrAdminId = req.user.profile?._id;
+
+    const hrAdmin = await HRAdminModel.findById(hrAdminId);
+    if (!hrAdmin) return res.status(200).json({ success: false, message: "HR-Admin not found" });
+
+    if (!hrAdmin.instructors.includes(instructorId)) {
+      return res.status(200).json({ success: false, message: "This instructor is not under your management" });
+    }
+
+    await HRAdminModel.findByIdAndUpdate(hrAdminId, { $pull: { instructors: instructorId } });
+    const InstructorModel = require('../models/instructor');
+    await InstructorModel.findByIdAndUpdate(instructorId, { $pull: { hrAdmins: hrAdminId } });
+    await hrAdminInstructorRequestModel.deleteMany({ hrAdmin: hrAdminId, instructor: instructorId });
+
+    return res.status(200).json({ success: true, message: "Instructor removed successfully" });
+  } catch (error) {
+    return res.status(200).json({ success: false, message: error.message || "Something went wrong" });
+  }
+});
+
+// Instructor-side: list my requests (mirror of employee getmyrequests)
+exports.getMyInstructorRequests = asyncHandler(async (req, res) => {
+  try {
+    const requests = await hrAdminInstructorRequestModel
+      .find({ instructor: req.user?.profile?._id, $or: [{ status: "Pending" }, { status: "Rejected" }, { status: "Complete" }] })
+      .populate({ path: 'hrAdmin', select: 'auth', populate: { path: 'auth', select: ['userName', 'fullName', 'email', 'image', 'fullAddress'] } })
+      .populate({ path: 'subjects', select: 'name' });
+
+    return res.status(200).json({ success: true, data: requests, message: "Instructor requests retrieved successfully" });
+  } catch (error) {
+    return res.status(200).json({ success: false, message: error.message || "Something went wrong" });
+  }
+});
+
+// Instructor accepts/rejects request
+exports.updateInstructorRequest = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    if (status !== 'Complete' && status !== 'Rejected') {
+      return res.status(200).json({ success: false, message: 'Invalid Status' });
+    }
+    const request = await hrAdminInstructorRequestModel.findById(id);
+    if (!request) return res.status(200).json({ success: false, message: 'Invalid Request' });
+
+    await hrAdminInstructorRequestModel.findByIdAndUpdate(id, { status });
+
+    if (status === 'Complete') {
+      // Link instructor to HR-Admin
+      await HRAdminModel.findByIdAndUpdate(request.hrAdmin, { $addToSet: { instructors: req.user?.profile?._id } });
+      // Add instructor subjects (union)
+      await InstructorModel.findOneAndUpdate({ auth: req.user._id }, { $addToSet: { subjects: { $each: (request.subjects || []) } }, $addToSet: { hrAdmins: request.hrAdmin } });
+    }
+
+    return res.status(200).json({ success: true, message: 'Request updated successfully' });
+  } catch (error) {
+    return res.status(200).json({ success: false, message: error.message || 'Something went wrong' });
+  }
+});
+
 
 exports.mydashboard = async (req, res) => {
   try {
@@ -486,7 +654,37 @@ exports.mysubjects = async (req, res) => {
 
 exports.getCalendarEvents = async (req, res) => {
   try {
-    const events = await CallenderEvents.find();
+    let query = {};
+
+    // HR-Admin: see own events only
+    if (req.user.userType === 'HR-Admin') {
+      query = { createdBy: req.user._id };
+    }
+
+    // Instructor: see events created by linked HR-Admins or by themselves
+    else if (req.user.userType === 'Instructor') {
+      try {
+        const InstructorModel = require('../models/instructor');
+        const HRAdminModel = require('../models/hr-admin');
+        const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+        if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+          return res.status(200).json({ success: true, data: [], message: 'No linked HR-Admins' });
+        }
+        const hrAdmins = await HRAdminModel.find({ _id: { $in: instructor.hrAdmins } }, 'auth');
+        const allowedCreators = hrAdmins.map(h => h.auth);
+        allowedCreators.push(req.user._id);
+        query = { createdBy: { $in: allowedCreators } };
+      } catch (e) {
+        return res.status(200).json({ success: true, data: [], message: 'No linked HR-Admins' });
+      }
+    }
+
+    // Other roles: default to their own events
+    else {
+      query = { createdBy: req.user._id };
+    }
+
+    const events = await CallenderEvents.find(query);
     return res.status(200).json({
       success: true,
       data: events,
@@ -565,10 +763,27 @@ exports.updateCalendarEvent = async (req, res) => {
 
     // Check if user is authorized to edit this event
     if (event.createdBy.toString() !== req.user._id.toString()) {
-      return res.status(200).json({
-        success: false,
-        message: "You are not authorized to edit this event"
-      });
+      // Allow Instructor to edit if the event was created by a linked HR-Admin
+      if (req.user.userType === 'Instructor') {
+        try {
+          const InstructorModel = require('../models/instructor');
+          const HRAdminModel = require('../models/hr-admin');
+          const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+          if (instructor && instructor.hrAdmins && instructor.hrAdmins.length > 0) {
+            const hrAdmins = await HRAdminModel.find({ _id: { $in: instructor.hrAdmins } }, 'auth');
+            const hrAdminAuthIds = new Set(hrAdmins.map(h => String(h.auth)));
+            if (!hrAdminAuthIds.has(String(event.createdBy))) {
+              return res.status(200).json({ success: false, message: "You are not authorized to edit this event" });
+            }
+          } else {
+            return res.status(200).json({ success: false, message: "You are not authorized to edit this event" });
+          }
+        } catch (_) {
+          return res.status(200).json({ success: false, message: "You are not authorized to edit this event" });
+        }
+      } else {
+        return res.status(200).json({ success: false, message: "You are not authorized to edit this event" });
+      }
     }
 
     event.title = title;
@@ -604,10 +819,27 @@ exports.deleteCalendarEvent = async (req, res) => {
 
     // Check if user is authorized to delete this event
     if (event.createdBy.toString() !== req.user._id.toString()) {
-      return res.status(200).json({
-        success: false,
-        message: "You are not authorized to delete this event"
-      });
+      // Allow Instructor to delete if the event was created by a linked HR-Admin
+      if (req.user.userType === 'Instructor') {
+        try {
+          const InstructorModel = require('../models/instructor');
+          const HRAdminModel = require('../models/hr-admin');
+          const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+          if (instructor && instructor.hrAdmins && instructor.hrAdmins.length > 0) {
+            const hrAdmins = await HRAdminModel.find({ _id: { $in: instructor.hrAdmins } }, 'auth');
+            const hrAdminAuthIds = new Set(hrAdmins.map(h => String(h.auth)));
+            if (!hrAdminAuthIds.has(String(event.createdBy))) {
+              return res.status(200).json({ success: false, message: "You are not authorized to delete this event" });
+            }
+          } else {
+            return res.status(200).json({ success: false, message: "You are not authorized to delete this event" });
+          }
+        } catch (_) {
+          return res.status(200).json({ success: false, message: "You are not authorized to delete this event" });
+        }
+      } else {
+        return res.status(200).json({ success: false, message: "You are not authorized to delete this event" });
+      }
     }
 
     await CallenderEvents.findByIdAndDelete(id);
@@ -722,7 +954,7 @@ exports.getComments = asyncHandler(async (req, res) => {
 exports.removeEmployee = async (req, res) => {
   try {
     const { employeeId } = req.params;
-    const hrAdminId = req.user.profile._id;
+    let hrAdminId = req.user.profile._id;
 
     if (!employeeId) {
       return res.status(200).json({
@@ -731,8 +963,27 @@ exports.removeEmployee = async (req, res) => {
       });
     }
 
+    // Resolve HR-Admin: if Instructor, find linked HR that manages this employee
+    let hrAdmin = await HRAdminModel.findById(hrAdminId);
+    if (!hrAdmin && req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: false, message: 'HR-Admin not found' });
+      }
+      const fallbackHR = await HRAdminModel.findOne({ _id: { $in: instructor.hrAdmins }, employees: employeeId });
+      if (fallbackHR) {
+        hrAdmin = fallbackHR;
+        hrAdminId = fallbackHR._id;
+      }
+    }
     // Check if HR-Admin exists
-    const hrAdmin = await HRAdminModel.findById(hrAdminId);
+    if (!hrAdmin) {
+      return res.status(200).json({
+        success: false,
+        message: "HR-Admin not found"
+      });
+    }
     if (!hrAdmin) {
       return res.status(200).json({
         success: false,
@@ -837,15 +1088,25 @@ exports.removeEmployee = async (req, res) => {
   }
 };
 
-// Get employee requests for HR Admin
+// Get employee requests for HR-Admin and for Instructor (linked HR-Admins)
 exports.getEmployeeRequests = asyncHandler(async (req, res) => {
   try {
-    const hrAdminId = req.user.profile._id;
+    let requestsQuery = {};
+    if (req.user.userType === 'HR-Admin') {
+      requestsQuery = { hrAdmin: req.user.profile._id };
+    } else if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: true, data: [], message: 'No linked HR-Admins' });
+      }
+      requestsQuery = { hrAdmin: { $in: instructor.hrAdmins } };
+    } else {
+      return res.status(200).json({ success: true, data: [], message: 'No requests available' });
+    }
 
     const requests = await hrAdminEmployeeRequestModel
-      .find({
-        hrAdmin: hrAdminId
-      })
+      .find(requestsQuery)
       .populate({
         path: "employee",
         select: "auth code",
@@ -853,6 +1114,14 @@ exports.getEmployeeRequests = asyncHandler(async (req, res) => {
           path: "auth",
           select: ["firstName", "lastName", "fullName", "userName", "email", "image"]
         },
+      })
+      .populate({
+        path: "instructor",
+        select: "auth code",
+        populate: {
+          path: "auth",
+          select: ["firstName", "lastName", "fullName", "userName", "email", "image"]
+        }
       })
       .populate({
         path: "subjects",
@@ -863,11 +1132,10 @@ exports.getEmployeeRequests = asyncHandler(async (req, res) => {
         }
       })
       .sort({ createdAt: -1 });
-
     return res.status(200).json({
       success: true,
       data: requests,
-      message: "Employee requests retrieved successfully"
+      message: "Requests retrieved successfully"
     });
   } catch (error) {
     return res.status(200).json({
@@ -881,13 +1149,23 @@ exports.getEmployeeRequests = asyncHandler(async (req, res) => {
 exports.cancelEmployeeRequest = asyncHandler(async (req, res) => {
   try {
     const { requestId } = req.params;
-    const hrAdminId = req.user.profile._id;
+    let hrAdminId = req.user.profile._id;
 
     if (!requestId) {
       return res.status(200).json({
         success: false,
         message: "Request ID is required"
       });
+    }
+
+    // If Instructor, allow cancel if request belongs to any linked HR-Admin
+    if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: false, message: 'No linked HR-Admins' });
+      }
+      hrAdminId = { $in: instructor.hrAdmins };
     }
 
     // Find and validate the request
@@ -919,11 +1197,11 @@ exports.cancelEmployeeRequest = asyncHandler(async (req, res) => {
   }
 });
 
-// Delete employee request (only for rejected requests)
+// Delete employee request (only for rejected requests) - also handles instructor requests
 exports.deleteEmployeeRequest = asyncHandler(async (req, res) => {
   try {
     const { requestId } = req.params;
-    const hrAdminId = req.user.profile._id;
+    let hrAdminId = req.user.profile._id;
 
     if (!requestId) {
       return res.status(200).json({
@@ -932,23 +1210,52 @@ exports.deleteEmployeeRequest = asyncHandler(async (req, res) => {
       });
     }
 
-    // Find and validate the request
-    const request = await hrAdminEmployeeRequestModel.findOne({
+    // Handle Instructor case - resolve HR-Admin context
+    if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: false, message: "No linked HR-Admins" });
+      }
+      hrAdminId = { $in: instructor.hrAdmins }; // Allow matching any linked HR-Admin
+    }
+
+    // First try to find in employee requests
+    let request = await hrAdminEmployeeRequestModel.findOne({
       _id: requestId,
       hrAdmin: hrAdminId,
       status: "Rejected"
     });
 
-    if (!request) {
+    if (request) {
+      // Delete employee request
+      await hrAdminEmployeeRequestModel.findByIdAndDelete(requestId);
       return res.status(200).json({
-        success: false,
-        message: "Rejected request not found or doesn't belong to you"
+        success: true,
+        message: "Request deleted successfully"
       });
     }
 
-    // Delete the request
-    await hrAdminEmployeeRequestModel.findByIdAndDelete(requestId);
+    // If not found in employee requests, try instructor requests (for Instructor users)
+    if (req.user.userType === 'Instructor') {
+      const instructorId = req.user.profile._id;
+      request = await hrAdminInstructorRequestModel.findOne({
+        _id: requestId,
+        instructor: instructorId,
+        status: "Rejected"
+      });
 
+      if (request) {
+        // Delete instructor request
+        await hrAdminInstructorRequestModel.findByIdAndDelete(requestId);
+        return res.status(200).json({
+          success: true,
+          message: "Request deleted successfully"
+        });
+      }
+    }
+
+    // Make deletion idempotent: if it's already gone or not rejected, consider it deleted for UX
     return res.status(200).json({
       success: true,
       message: "Request deleted successfully"
@@ -966,13 +1273,23 @@ exports.updateEmployeeRequestSubjects = asyncHandler(async (req, res) => {
   try {
     const { requestId } = req.params;
     const { subjects } = req.body;
-    const hrAdminId = req.user.profile._id;
+    let hrAdminId = req.user.profile._id;
 
     if (!requestId) {
       return res.status(200).json({
         success: false,
         message: "Request ID is required"
       });
+    }
+
+    // Adjust for Instructor: allow updates for pending requests on any linked HR-Admin
+    if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: false, message: "No linked HR-Admins" });
+      }
+      hrAdminId = { $in: instructor.hrAdmins };
     }
 
     // Find and validate the request (allow updates for pending requests only)
@@ -1217,7 +1534,7 @@ exports.assignEmployeeSubjects = asyncHandler(async (req, res) => {
   try {
     const { employeeId } = req.params;
     const { subjects } = req.body;
-    const hrAdminId = req.user.profile._id;
+    let hrAdminId = req.user.profile._id;
 
     if (!employeeId) {
       return res.status(200).json({
@@ -1233,13 +1550,23 @@ exports.assignEmployeeSubjects = asyncHandler(async (req, res) => {
       });
     }
 
-    // Verify that the employee belongs to this HR-Admin
-    const hrAdmin = await HRAdminModel.findById(hrAdminId);
+    // Verify that the employee belongs to this HR-Admin. If not found and caller is Instructor, try resolving by employee linkage
+    let hrAdmin = await HRAdminModel.findById(hrAdminId);
+    if (!hrAdmin && req.user.userType === 'Instructor') {
+      // Derive the HR-Admin that manages this employee
+      const fallbackHR = await HRAdminModel.findOne({ employees: employeeId }).select('_id employees');
+      if (fallbackHR) {
+        // Ensure this HR is among instructor's linked HRs
+        const InstructorModel = require('../models/instructor');
+        const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+        if (instructor && (instructor.hrAdmins || []).some(id => String(id) === String(fallbackHR._id))) {
+          hrAdmin = fallbackHR;
+          hrAdminId = fallbackHR._id;
+        }
+      }
+    }
     if (!hrAdmin) {
-      return res.status(200).json({
-        success: false,
-        message: "HR-Admin not found"
-      });
+      return res.status(200).json({ success: false, message: "HR-Admin not found" });
     }
 
     if (!hrAdmin.employees.includes(employeeId)) {
@@ -1283,6 +1610,47 @@ exports.assignEmployeeSubjects = asyncHandler(async (req, res) => {
       success: false,
       message: error.message || "Something went wrong"
     });
+  }
+});
+
+exports.instructorDashboard = asyncHandler(async (req, res) => {
+  try {
+    const InstructorModel = require('../models/instructor');
+    const subjectModel = require('../models/subject');
+    const topicModel = require('../models/topic');
+    const LessonsModel = require('../models/LessonsModel');
+    const QuizesModel = require('../models/quizes');
+
+    const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+    if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+      return res.status(200).json({ success: true, data: { employees: 0, subjects: 0, quizes: 0 }, message: 'No linked HR-Admins' });
+    }
+
+    const hrAdminIds = instructor.hrAdmins;
+
+    const subjects = await subjectModel.find({ createdBy: { $in: hrAdminIds } }).select('_id');
+    const subjectIds = subjects.map(s => s._id);
+
+    // Employees across HR-Admins
+    const HRAdminModel = require('../models/hr-admin');
+    const hrAdmins = await HRAdminModel.find({ _id: { $in: hrAdminIds } }, { employees: 1 }).populate('employees');
+    const employeeSet = new Set();
+    hrAdmins.forEach(hr => (hr.employees || []).forEach(e => employeeSet.add(String(e._id))));
+
+    // Quizzes created by these HR-Admins
+    const quizzesCount = await QuizesModel.countDocuments({ createdBy: { $in: hrAdminIds } });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Data get successfully',
+      data: {
+        employees: employeeSet.size,
+        subject: subjects.length,
+        quizes: quizzesCount,
+      }
+    });
+  } catch (error) {
+    return res.status(200).json({ success: false, message: error.message || 'Something went wrong' });
   }
 });
 

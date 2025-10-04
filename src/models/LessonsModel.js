@@ -10,6 +10,11 @@ const lessonsSchema = mongoose.Schema({
     content: {
         type: String
     },
+    contentType: {
+        type: String,
+        enum: ['google_docs', 'youtube'],
+        default: 'google_docs'
+    },
     words: Number,
     lang: {
         type: String,

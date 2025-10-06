@@ -583,6 +583,8 @@ exports.getAlltopicsbysubject = asyncHandler(async (req, res) => {
           subject: { $first: "$subject" },
           difficulty: { $first: "$difficulty" },
           type: { $first: "$type" },
+          // Preserve topic order so employee sees the same ordering
+          order: { $first: "$order" },
           lessons: { $first: "$lessons" },
 
           // Group by topic ID
@@ -606,7 +608,7 @@ exports.getAlltopicsbysubject = asyncHandler(async (req, res) => {
         },
       },
       {
-        $sort: { order: 1 }, // Sort by order field only
+        $sort: { order: 1 }, // Sort by preserved order field
       },
     ]);
     // find({ subject });

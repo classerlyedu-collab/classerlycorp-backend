@@ -1816,6 +1816,7 @@ exports.instructorDashboard = asyncHandler(async (req, res) => {
 
     // Get supervisor count
     const SupervisorModel = require('../models/supervisor');
+    const allEmployeeIds = Array.from(employeeSet);
     let supervisorCount = 0;
     if (allEmployeeIds.length > 0) {
       supervisorCount = await SupervisorModel.countDocuments({

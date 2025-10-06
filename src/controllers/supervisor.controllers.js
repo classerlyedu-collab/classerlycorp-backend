@@ -24,7 +24,11 @@ exports.getMyChildsubjectdata = async (req, res) => {
 
     const student = await employeeModel
       .findOne({ _id: id })
-      .populate({ path: "subjects", select: ["name", "image"] });
+      .populate({
+        path: "subjects",
+        select: ["name", "image"],
+        options: { sort: { order: 1 } }
+      });
 
     if (!student) {
       return res.status(404).json({ success: false, message: "Student not found" });
@@ -34,12 +38,15 @@ exports.getMyChildsubjectdata = async (req, res) => {
 
     for (const subject of student.subjects) {
       // Step 2: Get topics related to this subject
-      const topics = await topicModel.find({ subject: subject._id }).select("_id");
+      const topics = await topicModel.find({ subject: subject._id })
+        .select("_id")
+        .sort({ order: 1 });
 
       const topicIds = topics.map((t) => t._id);
 
       // Step 3: Get all lessons for those topics
-      const lessons = await lessonModel.find({ topic: { $in: topicIds } });
+      const lessons = await lessonModel.find({ topic: { $in: topicIds } })
+        .sort({ order: 1 });
 
       const totalLessons = lessons.length;
       let completedLessons = 0;
@@ -368,12 +375,15 @@ exports.getMyChildbyId = asyncHandler(async (req, res) => {
         {
           path: "subjects",
           select: ["image", "name"],
+          options: { sort: { order: 1 } },
           populate: {
             path: "topics",
             select: ["name", "description"],
+            options: { sort: { order: 1 } },
             populate: {
               path: "lessons",
-              select: ["title", "description", "userProgress"]
+              select: ["title", "description", "userProgress"],
+              options: { sort: { order: 1 } }
             }
           }
         }

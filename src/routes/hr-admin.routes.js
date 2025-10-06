@@ -14,8 +14,11 @@ const {
     getComments,
     removeEmployee,
     getEmployeeRequests,
+    getInstructorRequests,
     cancelEmployeeRequest,
+    cancelInstructorRequest,
     deleteEmployeeRequest,
+    deleteInstructorRequest,
     updateEmployeeRequestSubjects,
     assignEmployeeSubjects,
     getEmployeeSubjectData,
@@ -24,7 +27,10 @@ const {
     removeInstructor,
     getMyInstructorRequests,
     updateInstructorRequest,
-    instructorDashboard
+    instructorDashboard,
+    getMySupervisors,
+    updateSupervisorStatus,
+    unlinkEmployeeFromSupervisor
 } = require('../controllers/HRAdminController');
 const { getnotification } = require('../controllers/supervisor.controllers');
 const { verifytoken, verifyteachertoken, verifyHRAdminSubscription } = require('../middlewares/auth');
@@ -70,6 +76,11 @@ router.route("/requests/:requestId/cancel").delete(verifytoken, verifyHRAdminSub
 router.route("/requests/:requestId/delete").delete(verifytoken, deleteEmployeeRequest);
 router.route("/requests/:requestId/subjects").put(verifytoken, verifyHRAdminSubscription, updateEmployeeRequestSubjects);
 
+// Instructor requests endpoints
+router.route("/instructor-requests").get(verifytoken, verifyHRAdminSubscription, getInstructorRequests);
+router.route("/instructor-requests/:requestId/cancel").delete(verifytoken, verifyHRAdminSubscription, cancelInstructorRequest);
+router.route("/instructor-requests/:requestId/delete").delete(verifytoken, verifyHRAdminSubscription, deleteInstructorRequest);
+
 // Direct Employee Subject Assignment Route
 router.route("/employees/:employeeId/subjects").put(verifyteachertoken, verifyHRAdminSubscription, assignEmployeeSubjects);
 
@@ -80,5 +91,10 @@ router.route("/employees/:employeeId/bysubject").get(verifyteachertoken, verifyH
 // Instructor self-service endpoints (accessed by Instructor role)
 router.route("/instructor/requests").get(verifytoken, getMyInstructorRequests);
 router.route("/instructor/requests/:id").put(verifytoken, updateInstructorRequest);
+
+// Supervisor Routes
+router.route("/mysupervisors").get(verifyteachertoken, verifyHRAdminSubscription, getMySupervisors);
+router.route("/supervisor/:supervisorId/status").put(verifyteachertoken, verifyHRAdminSubscription, updateSupervisorStatus);
+router.route("/supervisor/:supervisorId/employee/:employeeId/unlink").delete(verifyteachertoken, verifyHRAdminSubscription, unlinkEmployeeFromSupervisor);
 
 module.exports = router;

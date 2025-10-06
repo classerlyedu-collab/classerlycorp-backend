@@ -1,7 +1,11 @@
 const { Router } = require('express');
 const { verifyadmintoken, verifytoken, verifyteachertoken, verifyHRAdminSubscription } = require('../middlewares/auth');
-const { AddTopic, getAllTopics, getAlltopicsbysubject, deletetopic, updatetopic, getAllLessonsOfTopics, getcontentOfLesson, addlesson, updatelesson, deletelesson, getTopicsBySubject, getLessonsByTopic, updateLessonProgress, getLessonProgress } = require("../controllers/Topics.Controllers")
+const { AddTopic, getAllTopics, getAlltopicsbysubject, deletetopic, updatetopic, getAllLessonsOfTopics, getcontentOfLesson, addlesson, updatelesson, deletelesson, getTopicsBySubject, getLessonsByTopic, updateLessonProgress, getLessonProgress, reorderTopics, reorderLessons } = require("../controllers/Topics.Controllers")
 const router = Router();
+
+// Reorder routes (must come before parameterized routes)
+router.route('/reorder').put(verifyteachertoken, verifyHRAdminSubscription, reorderTopics);
+router.route('/lesson/reorder').put(verifyteachertoken, verifyHRAdminSubscription, reorderLessons);
 
 // HR-Admin routes (require subscription)
 router.route('/').post(verifyteachertoken, verifyHRAdminSubscription, AddTopic);

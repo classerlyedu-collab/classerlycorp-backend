@@ -521,6 +521,159 @@ exports.getMyInstructorRequests = asyncHandler(async (req, res) => {
   }
 });
 
+// Get instructor requests for HR-Admin (similar to getEmployeeRequests)
+exports.getInstructorRequests = asyncHandler(async (req, res) => {
+  try {
+    let requestsQuery = {};
+    if (req.user.userType === 'HR-Admin') {
+      requestsQuery = { hrAdmin: req.user.profile._id };
+    } else if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: true, data: [], message: 'No linked HR-Admins' });
+      }
+      requestsQuery = { hrAdmin: { $in: instructor.hrAdmins } };
+    } else {
+      return res.status(200).json({ success: true, data: [], message: 'No requests available' });
+    }
+
+    const requests = await hrAdminInstructorRequestModel
+      .find(requestsQuery)
+      .populate({
+        path: "instructor",
+        select: "auth code",
+        populate: {
+          path: "auth",
+          select: ["firstName", "lastName", "fullName", "userName", "email", "image"]
+        }
+      })
+      .populate({
+        path: "subjects",
+        select: "name",
+        populate: {
+          path: "topics",
+          select: "name"
+        }
+      })
+      .sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      data: requests,
+      message: "Instructor requests retrieved successfully"
+    });
+  } catch (error) {
+    return res.status(200).json({
+      success: false,
+      message: error.message || "Something went wrong"
+    });
+  }
+});
+
+// Cancel instructor request (only for pending requests)
+exports.cancelInstructorRequest = asyncHandler(async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    let hrAdminId = req.user.profile._id;
+
+    if (!requestId) {
+      return res.status(200).json({
+        success: false,
+        message: "Request ID is required"
+      });
+    }
+
+    // If Instructor, allow cancel if request belongs to any linked HR-Admin
+    if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: false, message: 'No linked HR-Admins' });
+      }
+      hrAdminId = { $in: instructor.hrAdmins };
+    }
+
+    // Find and validate the instructor request
+    const request = await hrAdminInstructorRequestModel.findOne({
+      _id: requestId,
+      hrAdmin: hrAdminId,
+      status: "Pending"
+    });
+
+    if (!request) {
+      return res.status(200).json({
+        success: false,
+        message: "Pending instructor request not found or doesn't belong to you"
+      });
+    }
+
+    // Delete the instructor request
+    await hrAdminInstructorRequestModel.findByIdAndDelete(requestId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Instructor request cancelled successfully"
+    });
+  } catch (error) {
+    return res.status(200).json({
+      success: false,
+      message: error.message || "Something went wrong"
+    });
+  }
+});
+
+// Delete instructor request (only for rejected requests)
+exports.deleteInstructorRequest = asyncHandler(async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    let hrAdminId = req.user.profile._id;
+
+    if (!requestId) {
+      return res.status(200).json({
+        success: false,
+        message: "Request ID is required"
+      });
+    }
+
+    // If Instructor, allow delete if request belongs to any linked HR-Admin
+    if (req.user.userType === 'Instructor') {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: false, message: "No linked HR-Admins" });
+      }
+      hrAdminId = { $in: instructor.hrAdmins };
+    }
+
+    // Find and validate the instructor request
+    const request = await hrAdminInstructorRequestModel.findOne({
+      _id: requestId,
+      hrAdmin: hrAdminId,
+      status: "Rejected"
+    });
+
+    if (!request) {
+      return res.status(200).json({
+        success: false,
+        message: "Rejected instructor request not found or doesn't belong to you"
+      });
+    }
+
+    // Delete the instructor request
+    await hrAdminInstructorRequestModel.findByIdAndDelete(requestId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Instructor request deleted successfully"
+    });
+  } catch (error) {
+    return res.status(200).json({
+      success: false,
+      message: error.message || "Something went wrong"
+    });
+  }
+});
+
 // Instructor accepts/rejects request
 exports.updateInstructorRequest = asyncHandler(async (req, res) => {
   try {
@@ -589,10 +742,16 @@ exports.mydashboard = async (req, res) => {
         },
       },
     ]);
-    // let data = await HRAdminModel.findOne({
-    //   _id: req.user?.profile?._id
 
-    // })
+    // Get supervisor count
+    const SupervisorModel = require('../models/supervisor');
+    const hrAdmin = await HRAdminModel.findById(req.user.profile._id, 'employees');
+    let supervisorCount = 0;
+    if (hrAdmin && hrAdmin.employees && hrAdmin.employees.length > 0) {
+      supervisorCount = await SupervisorModel.countDocuments({
+        employeeIds: { $in: hrAdmin.employees }
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -602,6 +761,8 @@ exports.mydashboard = async (req, res) => {
         subject: data[0]?.subjects?.length,
         quizes: data[0]?.quizes?.length,
         games: data[0]?.games?.length,
+        supervisors: supervisorCount,
+        instructors: data[0]?.instructors?.length || 0,
       },
     });
   } catch (error) {
@@ -1028,6 +1189,19 @@ exports.removeEmployee = async (req, res) => {
       hrAdminId,
       { $pull: { employees: employeeId } }
     );
+
+    // Remove employee from any supervisor's employeeIds array
+    try {
+      const SupervisorModel = require('../models/supervisor');
+      await SupervisorModel.updateMany(
+        { employeeIds: employeeId },
+        { $pull: { employeeIds: employeeId } }
+      );
+      console.log(`Employee ${employeeId} removed from supervisor employeeIds arrays`);
+    } catch (supervisorError) {
+      console.error('Error removing employee from supervisors:', supervisorError.message);
+      // Don't fail the main operation if supervisor cleanup fails
+    }
 
     // Remove only the subjects that were assigned by this specific HR-Admin
     if (assignedSubjects.length > 0) {
@@ -1640,6 +1814,15 @@ exports.instructorDashboard = asyncHandler(async (req, res) => {
     // Quizzes created by these HR-Admins
     const quizzesCount = await QuizesModel.countDocuments({ createdBy: { $in: hrAdminIds } });
 
+    // Get supervisor count
+    const SupervisorModel = require('../models/supervisor');
+    let supervisorCount = 0;
+    if (allEmployeeIds.length > 0) {
+      supervisorCount = await SupervisorModel.countDocuments({
+        employeeIds: { $in: allEmployeeIds }
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: 'Data get successfully',
@@ -1647,10 +1830,287 @@ exports.instructorDashboard = asyncHandler(async (req, res) => {
         employees: employeeSet.size,
         subject: subjects.length,
         quizes: quizzesCount,
+        supervisors: supervisorCount,
       }
     });
   } catch (error) {
     return res.status(200).json({ success: false, message: error.message || 'Something went wrong' });
+  }
+});
+
+// Get supervisors whose employees are managed by this HR-Admin
+exports.getMySupervisors = asyncHandler(async (req, res) => {
+  try {
+    const SupervisorModel = require('../models/supervisor');
+
+    let hrAdminId;
+    const isHR = req.user.userType === 'HR-Admin';
+    const isInstructor = req.user.userType === 'Instructor';
+
+    if (isHR) {
+      hrAdminId = req.user.profile._id;
+    } else if (isInstructor) {
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (!instructor || !instructor.hrAdmins || instructor.hrAdmins.length === 0) {
+        return res.status(200).json({ success: true, data: [], message: "No linked HR-Admins" });
+      }
+      // For instructors, we'll get supervisors from all linked HR-Admins
+      const hrAdmins = await HRAdminModel.find({ _id: { $in: instructor.hrAdmins } }, 'employees');
+      const allEmployeeIds = hrAdmins.flatMap(hr => hr.employees || []);
+
+      // Find supervisors who have any of these employees
+      const supervisors = await SupervisorModel.find({ employeeIds: { $in: allEmployeeIds } })
+        .populate({ path: 'auth', select: 'fullName email image userName isBlocked' })
+        .populate({
+          path: 'employeeIds',
+          select: 'auth code subjects',
+          populate: [
+            { path: 'auth', select: 'fullName email image' },
+            { path: 'subjects', select: 'name image' }
+          ]
+        });
+
+      // Filter employees to only show those managed by linked HR-Admins
+      const hrEmployeeSet = new Set(allEmployeeIds.map(id => String(id)));
+      const filteredSupervisors = supervisors.map(supervisor => {
+        const filteredEmployees = (supervisor.employeeIds || []).filter(emp =>
+          hrEmployeeSet.has(String(emp._id))
+        );
+        return {
+          ...supervisor.toObject(),
+          employeeIds: filteredEmployees,
+          employeeCount: filteredEmployees.length
+        };
+      }).filter(sup => sup.employeeCount > 0);
+
+      return res.status(200).json({
+        success: true,
+        data: filteredSupervisors,
+        message: "Supervisors retrieved successfully"
+      });
+    } else {
+      return res.status(200).json({ success: true, data: [], message: "No supervisors found" });
+    }
+
+    // Get HR-Admin's employees
+    const hrAdmin = await HRAdminModel.findById(hrAdminId, 'employees');
+    if (!hrAdmin || !hrAdmin.employees || hrAdmin.employees.length === 0) {
+      return res.status(200).json({
+        success: true,
+        data: [],
+        message: "No employees found for this HR-Admin"
+      });
+    }
+
+    // Find all supervisors who have any of these employees
+    const supervisors = await SupervisorModel.find({
+      employeeIds: { $in: hrAdmin.employees }
+    })
+      .populate({ path: 'auth', select: 'fullName email image userName isBlocked' })
+      .populate({
+        path: 'employeeIds',
+        select: 'auth code subjects',
+        populate: [
+          { path: 'auth', select: 'fullName email image' },
+          { path: 'subjects', select: 'name image' }
+        ]
+      });
+
+    // Filter supervisor employees to only show those managed by this HR-Admin
+    const hrEmployeeSet = new Set(hrAdmin.employees.map(id => String(id)));
+    const filteredSupervisors = supervisors.map(supervisor => {
+      const filteredEmployees = (supervisor.employeeIds || []).filter(emp =>
+        hrEmployeeSet.has(String(emp._id))
+      );
+      return {
+        ...supervisor.toObject(),
+        employeeIds: filteredEmployees,
+        employeeCount: filteredEmployees.length
+      };
+    }).filter(sup => sup.employeeCount > 0); // Only include supervisors with at least one HR-Admin managed employee
+
+    return res.status(200).json({
+      success: true,
+      data: filteredSupervisors,
+      message: "Supervisors retrieved successfully"
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong"
+    });
+  }
+});
+
+// Update supervisor status (activate/deactivate)
+exports.updateSupervisorStatus = asyncHandler(async (req, res) => {
+  try {
+    const { supervisorId } = req.params;
+    const { isBlocked } = req.body;
+
+    if (typeof isBlocked !== 'boolean') {
+      return res.status(200).json({
+        success: false,
+        message: "isBlocked must be a boolean value"
+      });
+    }
+
+    // Check if supervisor exists and is linked to HR admin's employees
+    const SupervisorModel = require('../models/supervisor');
+    const supervisor = await SupervisorModel.findById(supervisorId)
+      .populate({ path: 'auth', select: 'fullName email' });
+
+    if (!supervisor) {
+      return res.status(200).json({
+        success: false,
+        message: "Supervisor not found"
+      });
+    }
+
+    // For HR-Admin: Check if supervisor has any employees linked to this HR admin
+    let hrAdminId = req.user.profile._id;
+    let hasAccess = false;
+
+    if (req.user.userType === 'HR-Admin') {
+      const hrAdmin = await HRAdminModel.findById(hrAdminId, 'employees');
+      if (hrAdmin && hrAdmin.employees && hrAdmin.employees.length > 0) {
+        hasAccess = supervisor.employeeIds.some(empId =>
+          hrAdmin.employees.some(hrEmpId => String(hrEmpId) === String(empId))
+        );
+      }
+    } else if (req.user.userType === 'Instructor') {
+      // For Instructor: Check if supervisor has employees linked to any of instructor's HR admins
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (instructor && instructor.hrAdmins && instructor.hrAdmins.length > 0) {
+        const hrAdmins = await HRAdminModel.find({ _id: { $in: instructor.hrAdmins } }, 'employees');
+        const allEmployeeIds = hrAdmins.flatMap(hr => hr.employees || []);
+        hasAccess = supervisor.employeeIds.some(empId =>
+          allEmployeeIds.some(hrEmpId => String(hrEmpId) === String(empId))
+        );
+      }
+    }
+
+    if (!hasAccess) {
+      return res.status(200).json({
+        success: false,
+        message: "You don't have permission to manage this supervisor"
+      });
+    }
+
+    // Update supervisor status
+    const AuthModel = require('../models/auth');
+    await AuthModel.findByIdAndUpdate(supervisor.auth._id, { isBlocked });
+
+    return res.status(200).json({
+      success: true,
+      message: `Supervisor ${isBlocked ? 'deactivated' : 'activated'} successfully`,
+      data: {
+        supervisorId: supervisor._id,
+        supervisorName: supervisor.auth.fullName,
+        isBlocked
+      }
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong"
+    });
+  }
+});
+
+// Unlink employee from supervisor
+exports.unlinkEmployeeFromSupervisor = asyncHandler(async (req, res) => {
+  try {
+    const { supervisorId, employeeId } = req.params;
+
+    // Check if supervisor exists
+    const SupervisorModel = require('../models/supervisor');
+    const supervisor = await SupervisorModel.findById(supervisorId)
+      .populate({ path: 'auth', select: 'fullName email' });
+
+    if (!supervisor) {
+      return res.status(200).json({
+        success: false,
+        message: "Supervisor not found"
+      });
+    }
+
+    // Check if employee exists
+    const EmployeeModel = require('../models/employee');
+    const employee = await EmployeeModel.findById(employeeId)
+      .populate({ path: 'auth', select: 'fullName email' });
+
+    if (!employee) {
+      return res.status(200).json({
+        success: false,
+        message: "Employee not found"
+      });
+    }
+
+    // Check if employee is linked to this supervisor
+    if (!supervisor.employeeIds.includes(employeeId)) {
+      return res.status(200).json({
+        success: false,
+        message: "Employee is not linked to this supervisor"
+      });
+    }
+
+    // Check permissions - ensure the employee belongs to HR admin or instructor's HR admins
+    let hrAdminId = req.user.profile._id;
+    let hasAccess = false;
+
+    if (req.user.userType === 'HR-Admin') {
+      const hrAdmin = await HRAdminModel.findById(hrAdminId, 'employees');
+      hasAccess = hrAdmin && hrAdmin.employees && hrAdmin.employees.includes(employeeId);
+    } else if (req.user.userType === 'Instructor') {
+      // For Instructor: Check if employee belongs to any of instructor's HR admins
+      const InstructorModel = require('../models/instructor');
+      const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
+      if (instructor && instructor.hrAdmins && instructor.hrAdmins.length > 0) {
+        const hrAdmins = await HRAdminModel.find({ _id: { $in: instructor.hrAdmins } }, 'employees');
+        const allEmployeeIds = hrAdmins.flatMap(hr => hr.employees || []);
+        hasAccess = allEmployeeIds.some(id => String(id) === String(employeeId));
+      }
+    }
+
+    if (!hasAccess) {
+      return res.status(200).json({
+        success: false,
+        message: "You don't have permission to manage this employee"
+      });
+    }
+
+    // Remove employee from supervisor's employeeIds array
+    await SupervisorModel.findByIdAndUpdate(
+      supervisorId,
+      { $pull: { employeeIds: employeeId } }
+    );
+
+    // Remove supervisor reference from employee
+    await EmployeeModel.findByIdAndUpdate(
+      employeeId,
+      { $unset: { supervisor: 1 } }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Employee unlinked from supervisor successfully",
+      data: {
+        supervisorId: supervisor._id,
+        supervisorName: supervisor.auth.fullName,
+        employeeId: employee._id,
+        employeeName: employee.auth.fullName
+      }
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong"
+    });
   }
 });
 

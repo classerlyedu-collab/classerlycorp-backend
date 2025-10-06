@@ -1,7 +1,7 @@
 const { Router } = require('express');
 // const { addsubjects, addTopic, allsubjects, alltopicsofsubject, allLessonsoftopics} = require('../controllers/CurriculumControllers/curriculum');
 // const { AddTopics, getAllLessonsOfTopics, getcontentOfLesson } = require('./TopicsControllers/Topics.Controllers');
-const { AddSubject, getAllSubjects, getAlltopicsofsubject, deleteSubject, updateSubject, getParticularStudentSubjects, syncGlobalSubjectsForAllHRAdmins, syncGlobalContentForAllHRAdmins } = require('../controllers/SubjectController');
+const { AddSubject, getAllSubjects, getAlltopicsofsubject, deleteSubject, updateSubject, getParticularStudentSubjects, syncGlobalSubjectsForAllHRAdmins, syncGlobalContentForAllHRAdmins, reorderSubjects } = require('../controllers/SubjectController');
 
 const { verifyadmintoken, verifytoken, verifyteachertoken, verifyHRAdminSubscription } = require('../middlewares/auth');
 const multer = require('multer');
@@ -43,6 +43,18 @@ router.route('/').post(verifyteachertoken, verifyHRAdminSubscription, upload.sin
     }
 });
 
+// Reorder subjects (must come before parameterized routes)
+router.route('/reorder').put(verifyteachertoken, verifyHRAdminSubscription, reorderSubjects);
+
+// Student subjects route
+router.route('/student/:studentId/subjects').get(verifytoken, getParticularStudentSubjects);
+
+// Sync global subjects for all HR-Admins (admin only)
+router.route('/sync-global-subjects').post(verifyadmintoken, syncGlobalSubjectsForAllHRAdmins);
+
+// Sync global content (topics, lessons, quizzes) for all HR-Admins (admin only)
+router.route('/sync-global-content').post(verifyadmintoken, syncGlobalContentForAllHRAdmins);
+
 router.route('/:id').delete(verifyteachertoken, verifyHRAdminSubscription, deleteSubject);
 router.route('/:id').put(verifyteachertoken, verifyHRAdminSubscription, upload.single('file'), async (req, res, next) => {
     try {
@@ -58,15 +70,6 @@ router.route('/:id').put(verifyteachertoken, verifyHRAdminSubscription, upload.s
         return res.status(500).json({ success: false, message: e?.message || 'Upload failed' });
     }
 });
-
-// Student subjects route
-router.route('/student/:studentId/subjects').get(verifytoken, getParticularStudentSubjects);
-
-// Sync global subjects for all HR-Admins (admin only)
-router.route('/sync-global-subjects').post(verifyadmintoken, syncGlobalSubjectsForAllHRAdmins);
-
-// Sync global content (topics, lessons, quizzes) for all HR-Admins (admin only)
-router.route('/sync-global-content').post(verifyadmintoken, syncGlobalContentForAllHRAdmins);
 
 
 

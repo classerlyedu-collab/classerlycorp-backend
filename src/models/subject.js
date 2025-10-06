@@ -6,6 +6,7 @@ const subjectSchema = new Schema(
   {
     name: { type: String },
     image: String,
+    order: { type: Number, default: 0 },
 
     topics: [
       {

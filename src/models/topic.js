@@ -6,6 +6,7 @@ const TopicSchema = new Schema(
   {
     name: { type: String, unique: true },
     image: String,
+    order: { type: Number, default: 0 },
 
     subject: {
       type: mongoose.Schema.Types.ObjectId,

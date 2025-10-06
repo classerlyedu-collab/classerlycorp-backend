@@ -1,6 +1,7 @@
 const topicModel = require("../models/topic");
 const LessonsModel = require("../models/LessonsModel");
 const { find, findById } = require("../models/employee");
+const employeeModel = require("../models/employee");
 const ApiResponse = require("../utils/ApiResponse");
 const asyncHandler = require("../utils/asyncHandler");
 const subjectModel = require("../models/subject");
@@ -370,7 +371,7 @@ exports.getAllTopics = asyncHandler(async (req, res) => {
     const topics = await topicModel.find({ subject: { $in: subjectIds } })
       .populate('subject', 'name image')
       .populate('lessons')
-      .sort({ createdAt: -1 });
+      .sort({ order: 1 });
 
     return res.status(200).json({
       success: true,
@@ -423,7 +424,7 @@ exports.getTopicsBySubject = asyncHandler(async (req, res) => {
     // Find topics for this subject
     const topics = await topicModel.find({ subject: subjectId })
       .populate('subject', 'name')
-      .sort({ createdAt: -1 });
+      .sort({ order: 1, createdAt: -1 });
 
     return res.status(200).json({
       success: true,
@@ -473,7 +474,7 @@ exports.getLessonsByTopic = asyncHandler(async (req, res) => {
     // Find lessons for this topic
     const lessons = await LessonsModel.find({ topic: topicId })
       .populate('topic', 'name')
-      .sort({ createdAt: -1 });
+      .sort({ order: 1, createdAt: -1 });
 
     return res.status(200).json({
       success: true,
@@ -605,7 +606,7 @@ exports.getAlltopicsbysubject = asyncHandler(async (req, res) => {
         },
       },
       {
-        $sort: { name: 1 }, // Sort by name in ascending order (A to Z)
+        $sort: { order: 1 }, // Sort by order field only
       },
     ]);
     // find({ subject });
@@ -1076,13 +1077,16 @@ exports.getAllLessonsOfTopics = asyncHandler(async (req, res) => {
       }
     }
 
-    const findTopicLesson = await LessonsModel.aggregate([
-      {
-        $match: {
-          topic: new mongoose.Types.ObjectId(topicId),
-        },
-      },
-    ]);
+    const findTopicLesson = await LessonsModel.find({ topic: topicId })
+      .populate({
+        path: 'topic',
+        select: 'name',
+        populate: {
+          path: 'subject',
+          select: 'name'
+        }
+      })
+      .sort({ order: 1 });
 
     if (!findTopicLesson || findTopicLesson.length === 0) {
       return res.status(200).json({
@@ -1092,28 +1096,29 @@ exports.getAllLessonsOfTopics = asyncHandler(async (req, res) => {
       });
     }
 
+    // Process lesson progress for employees
+    const lessonsWithProgress = await Promise.all(
+      findTopicLesson.map(async (lesson) => {
+        if (req.user.userType === 'Employee' && lesson.userProgress && lesson.userProgress.length > 0) {
+          const employeeProgress = lesson.userProgress.find(
+            progress => progress.user.toString() === req.user.profile._id.toString()
+          );
+          if (employeeProgress && employeeProgress.progress >= 100) {
+            lesson.status = "complete";
+          } else {
+            lesson.status = "incomplete";
+          }
+        } else {
+          lesson.status = "incomplete";
+        }
+        return lesson;
+      })
+    );
+
     return res.status(200).json(
       new ApiResponse(
         200,
-        await Promise.all(
-          findTopicLesson.map(async (i) => {
-            const lessonDetails = await LessonsModel.findById(i._id);
-
-            if (lessonDetails && lessonDetails.userProgress && lessonDetails.userProgress.length > 0) {
-              const employeeProgress = lessonDetails.userProgress.find(
-                progress => progress.user.toString() === req.user.profile._id.toString()
-              );
-              if (employeeProgress && employeeProgress.progress >= 100) {
-                i.status = "complete";
-              } else {
-                i.status = "incomplete";
-              }
-            } else {
-              i.status = "incomplete";
-            }
-            return i;
-          })
-        ),
+        lessonsWithProgress,
         "lesson found sucessfully"
       )
     );
@@ -1311,6 +1316,68 @@ exports.getLessonProgress = asyncHandler(async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong"
+    });
+  }
+});
+
+// Reorder topics
+exports.reorderTopics = asyncHandler(async (req, res) => {
+  try {
+    const { topics } = req.body; // Array of { id, order }
+
+    if (!topics || !Array.isArray(topics)) {
+      return res.status(400).json({
+        success: false,
+        message: "Topics array is required"
+      });
+    }
+
+    // Update each topic's order
+    const updatePromises = topics.map(({ id, order }) =>
+      topicModel.findByIdAndUpdate(id, { order }, { new: true })
+    );
+
+    await Promise.all(updatePromises);
+
+    res.status(200).json({
+      success: true,
+      message: "Topics reordered successfully"
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong"
+    });
+  }
+});
+
+// Reorder lessons
+exports.reorderLessons = asyncHandler(async (req, res) => {
+  try {
+    const { lessons } = req.body; // Array of { id, order }
+
+    if (!lessons || !Array.isArray(lessons)) {
+      return res.status(400).json({
+        success: false,
+        message: "Lessons array is required"
+      });
+    }
+
+    // Update each lesson's order
+    const updatePromises = lessons.map(({ id, order }) =>
+      LessonsModel.findByIdAndUpdate(id, { order }, { new: true })
+    );
+
+    await Promise.all(updatePromises);
+
+    res.status(200).json({
+      success: true,
+      message: "Lessons reordered successfully"
+    });
+  } catch (error) {
+    res.status(500).json({
       success: false,
       message: error.message || "Something went wrong"
     });

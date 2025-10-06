@@ -375,7 +375,7 @@ exports.getAllSubjects = asyncHandler(async (req, res) => {
       subjects = await subjectModel.find({ createdBy: hrAdmin._id })
         .populate('topics')
         .populate('createdBy', 'name email')
-        .sort({ createdAt: -1 });
+        .sort({ order: 1 });
     } else if (req.user.userType === 'Instructor') {
       const InstructorModel = require('../models/instructor');
       const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
@@ -385,7 +385,7 @@ exports.getAllSubjects = asyncHandler(async (req, res) => {
       subjects = await subjectModel.find({ createdBy: { $in: instructor.hrAdmins } })
         .populate('topics')
         .populate('createdBy', 'name email')
-        .sort({ createdAt: -1 });
+        .sort({ order: 1 });
     } else {
       return res.status(200).json({ success: true, data: [] });
     }
@@ -589,7 +589,7 @@ exports.getParticularStudentSubjects = asyncHandler(async (req, res) => {
     const student = await employeeModel.findOne({ auth: studentId })
       .populate({
         path: 'subjects',
-        select: 'name image topics createdBy'
+        select: 'name image topics createdBy order'
       });
 
     if (!student) {
@@ -606,6 +606,37 @@ exports.getParticularStudentSubjects = asyncHandler(async (req, res) => {
     });
   } catch (error) {
     return res.status(200).json({
+      success: false,
+      message: error.message || "Something went wrong"
+    });
+  }
+});
+
+// Reorder subjects
+exports.reorderSubjects = asyncHandler(async (req, res) => {
+  try {
+    const { subjects } = req.body; // Array of { id, order }
+
+    if (!subjects || !Array.isArray(subjects)) {
+      return res.status(400).json({
+        success: false,
+        message: "Subjects array is required"
+      });
+    }
+
+    // Update each subject's order
+    const updatePromises = subjects.map(({ id, order }) =>
+      subjectModel.findByIdAndUpdate(id, { order }, { new: true })
+    );
+
+    await Promise.all(updatePromises);
+
+    res.status(200).json({
+      success: true,
+      message: "Subjects reordered successfully"
+    });
+  } catch (error) {
+    res.status(500).json({
       success: false,
       message: error.message || "Something went wrong"
     });

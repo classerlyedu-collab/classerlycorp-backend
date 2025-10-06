@@ -21,7 +21,11 @@ exports.mysubjects = async (req, res) => {
 
     let data = await employeeModel
       .findOne({ _id: employeeId })
-      .populate({ path: "subjects", select: ["name", "image"] });
+      .populate({
+        path: "subjects",
+        select: ["name", "image"],
+        options: { sort: { order: 1 } }
+      });
 
     return res.send({
       success: true,

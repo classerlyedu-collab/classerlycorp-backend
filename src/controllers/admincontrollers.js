@@ -447,6 +447,7 @@ exports.getAllSubjects = asyncHandler(async (req, res) => {
         path: 'createdBy',
         populate: { path: 'auth', select: 'fullName email' }
       })
+      .sort({ order: 1 })
 
     // Debug image refs for verification
     // console.log('[getAllSubjects] sample', subjects.slice(0,3).map(s => ({ id: s._id, image: s.image })));
@@ -588,7 +589,8 @@ exports.getTopicsBySubjectId = asyncHandler(async (req, res) => {
   const { id } = req.params; // Get the subject ID from the request parameters
 
   try {
-    const topics = await TopicModel.find({ subject: id });
+    const topics = await TopicModel.find({ subject: id })
+      .sort({ order: 1 });
 
     return res.status(200).json({
       success: true,
@@ -771,7 +773,8 @@ exports.getLessonsByTopicId = asyncHandler(async (req, res) => {
   const { id } = req.params; // Get the subject ID from the request parameters
 
   try {
-    const lessons = await LessonModel.find({ topic: id });
+    const lessons = await LessonModel.find({ topic: id })
+      .sort({ order: 1 });
 
     return res.status(200).json({
       success: true,

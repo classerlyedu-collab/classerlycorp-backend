@@ -887,7 +887,20 @@ exports.addLesson = asyncHandler(async (req, res) => {
       // Add the new lesson to the topic
       findtopic.lessons.push(data._id);
       await findtopic.save();
-      created.push(data);
+
+      // Populate the lesson with necessary fields for frontend
+      const populatedLesson = await LessonModel.findById(data._id)
+        .populate({
+          path: 'topic',
+          select: 'name subject',
+          populate: {
+            path: 'subject',
+            select: 'name'
+          }
+        })
+        .populate('createdBy', 'name email');
+
+      created.push(populatedLesson);
     }
 
     // If creating for all HR-Admins, add to global lessons tracking

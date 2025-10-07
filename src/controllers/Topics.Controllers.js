@@ -398,7 +398,7 @@ exports.getTopicsBySubject = asyncHandler(async (req, res) => {
       });
     }
 
-    // Verify ownership for HR-Admin or Instructor (linked)
+    // Verify ownership/access for HR-Admin, Instructor (linked), or Employee (assigned to HR-Admin's subject)
     let hrAdmin = await hrAdminModel.findOne({ auth: req.user._id });
     let subject;
     if (hrAdmin) {
@@ -410,6 +410,22 @@ exports.getTopicsBySubject = asyncHandler(async (req, res) => {
         return res.status(200).json({ success: true, data: [] });
       }
       subject = await subjectModel.findOne({ _id: subjectId, createdBy: { $in: instructor.hrAdmins } });
+    } else if (req.user.userType === 'Employee') {
+      const employeeId = req.user?.profile?._id;
+      const employeeHrAdmin = await hrAdminModel.findOne({ employees: employeeId });
+      if (!employeeHrAdmin) {
+        return res.status(200).json({ success: true, data: [] });
+      }
+      // Subject must belong to employee's HR-Admin
+      subject = await subjectModel.findOne({ _id: subjectId, createdBy: employeeHrAdmin._id });
+      if (!subject) {
+        return res.status(403).json({ success: false, message: "Subject not found or you don't have permission to access it" });
+      }
+      // Employee must have this subject assigned
+      const employee = await employeeModel.findById(employeeId);
+      if (!employee || !employee.subjects || !employee.subjects.some(s => String(s) === String(subject._id))) {
+        return res.status(403).json({ success: false, message: "You don't have access to this subject" });
+      }
     } else {
       return res.status(200).json({ success: true, data: [] });
     }
@@ -451,7 +467,7 @@ exports.getLessonsByTopic = asyncHandler(async (req, res) => {
       });
     }
 
-    // Verify ownership for HR-Admin or Instructor (linked)
+    // Verify ownership/access for HR-Admin, Instructor (linked), or Employee (assigned to HR-Admin's subject)
     let hrAdmin = await hrAdminModel.findOne({ auth: req.user._id });
     const topic = await topicModel.findById(topicId).populate('subject');
     if (!topic) {
@@ -466,6 +482,16 @@ exports.getLessonsByTopic = asyncHandler(async (req, res) => {
       const instructor = await InstructorModel.findOne({ auth: req.user._id }, 'hrAdmins');
       if (!instructor || !(instructor.hrAdmins || []).some(id => String(id) === String(topic.subject.createdBy))) {
         return res.status(403).json({ success: false, message: "Topic not found or you don't have permission to access it" });
+      }
+    } else if (req.user.userType === 'Employee') {
+      const employeeId = req.user?.profile?._id;
+      const employeeHrAdmin = await hrAdminModel.findOne({ employees: employeeId });
+      if (!employeeHrAdmin || String(employeeHrAdmin._id) !== String(topic.subject.createdBy)) {
+        return res.status(403).json({ success: false, message: "Topic not found or you don't have permission to access it" });
+      }
+      const employee = await employeeModel.findById(employeeId);
+      if (!employee || !employee.subjects || !employee.subjects.some(s => String(s) === String(topic.subject._id))) {
+        return res.status(403).json({ success: false, message: "You don't have access to this subject" });
       }
     } else {
       return res.status(403).json({ success: false, message: "Topic not found or you don't have permission to access it" });
@@ -873,7 +899,14 @@ exports.addlesson = asyncHandler(async (req, res) => {
 
       // Populate the lesson with necessary fields for frontend
       const populatedLesson = await LessonsModel.findById(data._id)
-        .populate('topic', 'name subject')
+        .populate({
+          path: 'topic',
+          select: 'name subject',
+          populate: {
+            path: 'subject',
+            select: 'name'
+          }
+        })
         .populate('createdBy', 'name email');
 
       created.push(populatedLesson);

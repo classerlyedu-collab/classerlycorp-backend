@@ -4,7 +4,7 @@ const cors = require("cors");
 const cookieparser = require("cookie-parser");
 const path = require("path");
 const commentRoutes = require("./routes/comment");
-const discussionRoutes = require("./routes/discussion.routes");
+const lessonDiscussionRoutes = require("./routes/lessonDiscussion.routes");
 
 // 🚨 Apply raw body parser ONLY for Stripe Webhooks FIRST
 app.use("/api/v1/auth/stripe/webhook", express.raw({ type: 'application/json' }));
@@ -84,7 +84,7 @@ app.use("/api/v1/topic", topicRoutes);
 app.use("/api/v1/supervisor", supervisorRoutes);
 
 app.use("/api/comments", commentRoutes);
-app.use("/api/v1/discussions", discussionRoutes);
+app.use("/api/v1/discussions", lessonDiscussionRoutes);
 
 app.use(
   "/uploads",

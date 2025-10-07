@@ -9,7 +9,7 @@ const lessonDiscussionRoutes = require("./routes/lessonDiscussion.routes");
 // 🚨 Apply raw body parser ONLY for Stripe Webhooks FIRST
 app.use("/api/v1/auth/stripe/webhook", express.raw({ type: 'application/json' }));
 
-app.use(express());
+// Regular JSON parsing for all other routes
 app.use(express.json({ limit: process.env.JSON_BODY_LIMIT || "50mb" }));
 
 app.use(express.urlencoded({ extended: true }));

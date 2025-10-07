@@ -9,7 +9,7 @@ const subscriptionSchema = new Schema(
         stripeSubscriptionId: { type: String },
         stripeSubscriptionItemId: { type: String }, // For metered billing usage reporting
         currentPeriodEnd: { type: Date },
-        pricePerSeatCents: { type: Number, default: 0 },
+        pricePerSeatCents: { type: Number, default: 495 }, // $4.95 per seat
         seatCount: { type: Number, default: 0 },
         lastSyncedAt: { type: Date },
         lastUsageReported: { type: Date },

@@ -34,7 +34,7 @@ const {
 } = require('../controllers/HRAdminController');
 const { getnotification } = require('../controllers/supervisor.controllers');
 const { verifytoken, verifyteachertoken, verifyHRAdminSubscription } = require('../middlewares/auth');
-const { getMySubscription, createCheckoutSession, reportUsage } = require('../controllers/subscription.controller');
+const { getMySubscription, createCheckoutSession, reportUsage, syncSubscription, reportAllUsage } = require('../controllers/subscription.controller');
 
 const router = Router();
 
@@ -47,6 +47,8 @@ router.route('/getNotification').get(verifytoken, getnotification);
 router.route('/subscription').get(verifytoken, getMySubscription);
 router.route('/subscription/checkout').post(verifytoken, createCheckoutSession);
 router.route('/subscription/report-usage').post(verifytoken, reportUsage);
+router.route('/subscription/sync').post(verifytoken, syncSubscription);
+router.route('/subscription/report-all-usage').post(verifytoken, reportAllUsage); // Report usage for all subscriptions
 // Protected HR-Admin routes
 router.route("/mycourses").get(verifyteachertoken, verifyHRAdminSubscription, mycourses);
 router.route("/mysubjects").get(verifyteachertoken, verifyHRAdminSubscription, mysubjects);

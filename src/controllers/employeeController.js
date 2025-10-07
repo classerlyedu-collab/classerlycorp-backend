@@ -128,21 +128,14 @@ exports.updaterequest = async (req, res) => {
       // Report usage to Stripe for metered billing
       try {
         const SubscriptionModel = require('../models/subscription');
+        const { reportSeatUsage } = require('../utils/stripeUsageReporting');
         const subscription = await SubscriptionModel.findOne({ hrAdmin: data.hrAdmin });
 
-        if (subscription && subscription.stripeSubscriptionId && subscription.stripeSubscriptionItemId) {
+        if (subscription && subscription.stripeSubscriptionId && subscription.stripeCustomerId) {
           const hrAdmin = await hrAdminModel.findById(data.hrAdmin).populate('employees');
           const seatCount = hrAdmin.employees?.length || 0;
 
-          const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-          await stripe.subscriptionItems.createUsageRecord(
-            subscription.stripeSubscriptionItemId,
-            {
-              quantity: seatCount,
-              timestamp: Math.floor(Date.now() / 1000),
-              action: 'set'
-            }
-          );
+          await reportSeatUsage(subscription.stripeCustomerId, seatCount);
 
           // Update local subscription record
           await SubscriptionModel.findOneAndUpdate(

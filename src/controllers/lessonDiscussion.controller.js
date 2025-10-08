@@ -10,6 +10,30 @@ const authModel = require('../models/auth');
 const asyncHandler = require('../utils/asyncHandler');
 const ApiResponse = require('../utils/ApiResponse');
 const ApiError = require('../utils/ApiError');
+const sanitizeHtml = require('sanitize-html');
+const { extractCloudinaryUrls, deleteMultipleFromCloudinary, findRemovedUrls } = require('../utils/cloudinaryCleanup');
+
+// HTML sanitization configuration
+const sanitizeOptions = {
+    allowedTags: ['p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'ol', 'ul', 'li', 'a', 'img', 'iframe', 'video', 'source'],
+    allowedAttributes: {
+        'a': ['href', 'target', 'rel'],
+        'img': ['src', 'alt', 'width', 'height', 'class', 'style'],
+        'iframe': ['src', 'width', 'height', 'frameborder', 'allowfullscreen', 'allow', 'class', 'style'],
+        'video': ['src', 'width', 'height', 'controls', 'poster', 'preload', 'class', 'style'],
+        'source': ['src', 'type'],
+        '*': ['class', 'style']
+    },
+    allowedStyles: {
+        '*': {
+            'color': [/^#(0x)?[0-9a-f]+$/i, /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/],
+            'background-color': [/^#(0x)?[0-9a-f]+$/i, /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/],
+            'max-width': [/^\d+(?:px|em|%|rem)$/]
+        }
+    },
+    allowedSchemes: ['http', 'https', 'data'],
+    allowedIframeHostnames: ['www.youtube.com', 'player.vimeo.com', 'www.dailymotion.com', 'player.twitch.tv']
+};
 
 // Helper function to check if user can access lesson
 const canAccessLesson = async (req, lessonId) => {
@@ -353,10 +377,13 @@ const createThread = asyncHandler(async (req, res) => {
 
     const { hrAdmin, lesson, subject, topic } = accessCheck;
 
+    // Sanitize HTML content
+    const sanitizedText = sanitizeHtml(text.trim(), sanitizeOptions);
+
     // Create thread with message
     const thread = await LessonDiscussionThread.create({
         title: title.trim(),
-        message: text.trim(),
+        message: sanitizedText,
         lesson: lessonId,
         subject: subject._id,
         topic: topic._id,
@@ -424,10 +451,13 @@ const createMessage = asyncHandler(async (req, res) => {
         }
     }
 
+    // Sanitize HTML content
+    const sanitizedText = sanitizeHtml(text.trim(), sanitizeOptions);
+
     const message = await LessonDiscussionMessage.create({
         thread: threadId,
         sender: req.user._id,
-        text: text.trim(),
+        text: sanitizedText,
         parent: parentId || null
     });
 
@@ -461,8 +491,25 @@ const updateThread = asyncHandler(async (req, res) => {
         return res.status(403).json(new ApiError(403, "Access denied"));
     }
 
+    // If message is being updated, find and delete removed media
+    if (message) {
+        const oldMessage = thread.message;
+        const newMessage = sanitizeHtml(message.trim(), sanitizeOptions);
+
+        // Find URLs that were removed
+        const removedUrls = findRemovedUrls(oldMessage, newMessage);
+
+        // Delete removed media from Cloudinary (don't wait)
+        if (removedUrls.length > 0) {
+            deleteMultipleFromCloudinary(removedUrls).catch(() => {
+                // Silently handle errors
+            });
+        }
+
+        thread.message = newMessage;
+    }
+
     if (title) thread.title = title.trim();
-    if (message) thread.message = message.trim();
 
     await thread.save();
 
@@ -488,6 +535,25 @@ const deleteThread = asyncHandler(async (req, res) => {
     const accessCheck = await canAccessLesson(req, thread.lesson);
     if (!accessCheck.canAccess) {
         return res.status(403).json(new ApiError(403, "Access denied"));
+    }
+
+    // Extract and delete Cloudinary media from thread message
+    const threadUrls = extractCloudinaryUrls(thread.message);
+
+    // Get all messages in this thread
+    const messages = await LessonDiscussionMessage.find({ thread: threadId });
+
+    // Extract Cloudinary URLs from all messages
+    const messageUrls = messages.flatMap(msg => extractCloudinaryUrls(msg.text));
+
+    // Combine all URLs
+    const allUrls = [...threadUrls, ...messageUrls];
+
+    // Delete from Cloudinary (don't wait for it to complete)
+    if (allUrls.length > 0) {
+        deleteMultipleFromCloudinary(allUrls).catch(() => {
+            // Silently handle errors - deletion failure shouldn't block thread deletion
+        });
     }
 
     // Delete all messages in this thread
@@ -527,7 +593,22 @@ const updateMessage = asyncHandler(async (req, res) => {
         return res.status(403).json(new ApiError(403, "Access denied"));
     }
 
-    message.text = text.trim();
+    // Store old text for comparison
+    const oldText = message.text;
+    const newText = sanitizeHtml(text.trim(), sanitizeOptions);
+
+    // Find URLs that were removed
+    const removedUrls = findRemovedUrls(oldText, newText);
+
+    // Delete removed media from Cloudinary (don't wait)
+    if (removedUrls.length > 0) {
+        deleteMultipleFromCloudinary(removedUrls).catch(() => {
+            // Silently handle errors
+        });
+    }
+
+    // Sanitize HTML content
+    message.text = newText;
     await message.save();
 
     const populatedMessage = await LessonDiscussionMessage.findById(message._id)
@@ -558,6 +639,25 @@ const deleteMessage = asyncHandler(async (req, res) => {
     const accessCheck = await canAccessLesson(req, thread.lesson);
     if (!accessCheck.canAccess) {
         return res.status(403).json(new ApiError(403, "Access denied"));
+    }
+
+    // Extract Cloudinary URLs from this message
+    const messageUrls = extractCloudinaryUrls(message.text);
+
+    // Get all replies to this message
+    const replies = await LessonDiscussionMessage.find({ parent: messageId });
+
+    // Extract Cloudinary URLs from all replies
+    const replyUrls = replies.flatMap(reply => extractCloudinaryUrls(reply.text));
+
+    // Combine all URLs
+    const allUrls = [...messageUrls, ...replyUrls];
+
+    // Delete from Cloudinary (don't wait for it to complete)
+    if (allUrls.length > 0) {
+        deleteMultipleFromCloudinary(allUrls).catch(() => {
+            // Silently handle errors
+        });
     }
 
     // Delete all replies to this message

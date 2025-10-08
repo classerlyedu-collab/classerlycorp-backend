@@ -24,11 +24,31 @@ exports.upload = asyncHandler(async (req, res, next) => {
       return res.status(400).json({ success: false, message: "File not found on server" });
     }
 
-    // Upload to Cloudinary
-    const result = await cloud.uploader.upload(filePath, {
+    // Determine resource type and folder based on file type
+    const isVideo = req.file.mimetype.startsWith('video/');
+    const folder = "Classify Enterprises/discussion";
+
+    // Upload options with quality optimization
+    const uploadOptions = {
       resource_type: "auto",
-      folder: "Classify Enterprises/profile" // Optional: organize uploads in folders
-    });
+      folder: folder,
+    };
+
+    // Add quality optimization for images
+    if (!isVideo) {
+      uploadOptions.quality = "auto:low"; // Automatic quality reduction for images
+      uploadOptions.fetch_format = "auto"; // Automatically choose best format (WebP, etc.)
+    } else {
+      // Video optimization - convert to web-friendly format
+      uploadOptions.quality = "auto:low";
+      uploadOptions.resource_type = "video";
+      uploadOptions.format = "mp4"; // Convert to MP4 for universal browser support
+      uploadOptions.video_codec = "h264"; // Use H.264 codec for best compatibility
+      uploadOptions.audio_codec = "aac"; // AAC audio for best compatibility
+    }
+
+    // Upload to Cloudinary
+    const result = await cloud.uploader.upload(filePath, uploadOptions);
 
     // Delete the local file after successful upload
     fs.unlink(filePath, (err) => {
@@ -42,7 +62,11 @@ exports.upload = asyncHandler(async (req, res, next) => {
       file: result.secure_url,
       public_id: result.public_id,
       filename: req.file.filename,
-      uploadedAt: new Date()
+      uploadedAt: new Date(),
+      resource_type: result.resource_type,
+      format: result.format,
+      // Return proper MIME type for videos converted to MP4
+      mimeType: isVideo ? 'video/mp4' : req.file.mimetype
     });
 
   } catch (error) {

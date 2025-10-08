@@ -4,8 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const { upload } = require('../controllers/upload.controller');
 
-// Define the maximum file size (5 MB in bytes)
-const maxSize = 5 * 1024 * 1024;
+// Define the maximum file size (10 MB for images, 50 MB for videos)
+const maxSize = 50 * 1024 * 1024;
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(__dirname, '../uploads');
@@ -33,15 +33,22 @@ const fileupload = multer({
     files: 1 // Only allow one file at a time
   },
   fileFilter: function (req, file, callback) {
-    // Check file type
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
+    // Check file type - allow images and videos
+    const allowedImageTypes = /jpeg|jpg|png|gif|webp/;
+    const allowedVideoTypes = /mp4|webm|ogg|mov|avi/;
+    const extname = path.extname(file.originalname).toLowerCase();
 
-    if (mimetype && extname) {
+    const isImage = allowedImageTypes.test(extname.replace('.', '')) && file.mimetype.startsWith('image/');
+    const isVideo = allowedVideoTypes.test(extname.replace('.', '')) && file.mimetype.startsWith('video/');
+
+    if (isImage || isVideo) {
+      // Additional size check for images (5MB) and videos (50MB)
+      if (isImage && file.size > 5 * 1024 * 1024) {
+        return callback(new Error('Image files must be less than 5MB!'), false);
+      }
       return callback(null, true);
     } else {
-      callback(new Error('Only image files (JPEG, JPG, PNG, GIF, WEBP) are allowed!'), false);
+      callback(new Error('Only image files (JPEG, JPG, PNG, GIF, WEBP) and video files (MP4, WEBM, OGG, MOV, AVI) are allowed!'), false);
     }
   },
 });

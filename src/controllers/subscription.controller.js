@@ -3,7 +3,7 @@ const SubscriptionModel = require("../models/subscription");
 const HRAdminModel = require("../models/hr-admin");
 const AuthModel = require("../models/auth");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const { reportSeatUsage } = require("../utils/stripeUsageReporting");
+const { reportSeatUsage, reportUsageIfChanged } = require("../utils/stripeUsageReporting");
 
 // Helper function to sync subscription data from Stripe
 async function syncSubscriptionFromStripe(stripeCustomerId) {
@@ -53,7 +53,6 @@ async function syncSubscriptionFromStripe(stripeCustomerId) {
                 { upsert: true }
             );
 
-            console.log(`Subscription synced from Stripe: ${stripeSub.id}`);
             return updateData;
         }
     } catch (error) {
@@ -69,14 +68,6 @@ exports.getMySubscription = asyncHandler(async (req, res) => {
 
     let sub = await SubscriptionModel.findOne({ hrAdmin: hrAdmin._id });
     const seatCount = hrAdmin.employees?.length || 0;
-
-    // If subscription exists but missing currentPeriodEnd, sync from Stripe
-    if (sub && sub.stripeCustomerId && (!sub.currentPeriodEnd || !sub.stripeSubscriptionId)) {
-        console.log('Syncing subscription data from Stripe...');
-        await syncSubscriptionFromStripe(sub.stripeCustomerId);
-        // Refresh the subscription data
-        sub = await SubscriptionModel.findOne({ hrAdmin: hrAdmin._id });
-    }
 
     const response = {
         subscription: sub,
@@ -102,11 +93,22 @@ exports.createCheckoutSession = asyncHandler(async (req, res) => {
     // Fetch auth user to prefill email/name in Stripe Checkout
     const authUser = await AuthModel.findById(hrAdminAuthId).lean();
 
-    const customer = await stripe.customers.create({
+    // Check if customer already exists to avoid duplicates
+    let customer;
+    const existingCustomers = await stripe.customers.list({
         email: authUser?.email,
-        name: authUser?.fullName,
-        metadata: { hrAdminId: String(hrAdmin._id), authId: String(hrAdminAuthId) },
+        limit: 1
     });
+
+    if (existingCustomers.data.length > 0) {
+        customer = existingCustomers.data[0];
+    } else {
+        customer = await stripe.customers.create({
+            email: authUser?.email,
+            name: authUser?.fullName,
+            metadata: { hrAdminId: String(hrAdmin._id), authId: String(hrAdminAuthId) },
+        });
+    }
 
     // Ensure we have a proper frontend URL
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
@@ -128,6 +130,9 @@ exports.createCheckoutSession = asyncHandler(async (req, res) => {
         line_items: [lineItem],
         success_url: `${frontendUrl}/Subscription?success=1`,
         cancel_url: `${frontendUrl}/Subscription?canceled=1`,
+        payment_method_types: ['card'],
+        payment_method_collection: 'always'
+        // We set the customer's default PM in the webhook `checkout.session.completed`
     });
 
     await SubscriptionModel.findOneAndUpdate(
@@ -153,14 +158,8 @@ exports.reportUsage = asyncHandler(async (req, res) => {
     const seatCount = hrAdmin.employees?.length || 0;
 
     try {
-        // Report usage to Stripe using new Billing Meter Events API
-        await reportSeatUsage(subscription.stripeCustomerId, seatCount);
-
-        // Update local subscription record
-        await SubscriptionModel.findOneAndUpdate(
-            { hrAdmin: hrAdmin._id },
-            { seatCount, lastUsageReported: new Date() }
-        );
+        // Report usage to Stripe using new Billing Meter Events API (with deduplication)
+        await reportUsageIfChanged(subscription.stripeCustomerId, seatCount);
 
         res.status(200).json({
             success: true,
@@ -176,7 +175,6 @@ exports.reportUsage = asyncHandler(async (req, res) => {
 exports.stripeWebhook = asyncHandler(async (req, res) => {
     const sig = req.headers['stripe-signature'];
 
-    console.log('🔗 Webhook received:', req.headers['stripe-signature'] ? 'with signature' : 'no signature');
 
     let event;
     try {
@@ -194,40 +192,37 @@ exports.stripeWebhook = asyncHandler(async (req, res) => {
         }
 
         event = stripe.webhooks.constructEvent(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET);
-        console.log('✅ Webhook signature verified successfully');
-        console.log('   Event type:', event.type);
-        console.log('   Event ID:', event.id);
     } catch (err) {
-        console.error('❌ Webhook signature verification failed:', err.message);
-
-        // For testing purposes, let's try to parse the event without signature verification
-        console.log('🧪 Attempting to parse event without signature verification for testing...');
-        try {
-            let eventData;
-            if (Buffer.isBuffer(req.body)) {
-                // Parse Buffer as JSON
-                eventData = JSON.parse(req.body.toString());
-            } else if (typeof req.body === 'object' && req.body.id) {
-                eventData = req.body;
-            } else {
-                throw new Error('Cannot parse event body');
-            }
-
-            if (eventData && eventData.id && eventData.type) {
-                event = eventData;
-                console.log('✅ Event parsed successfully (without signature verification)');
-                console.log('   Event type:', event.type);
-                console.log('   Event ID:', event.id);
-            } else {
-                throw new Error('Invalid event structure');
-            }
-        } catch (parseErr) {
-            console.error('❌ Failed to parse event:', parseErr.message);
-            return res.status(400).send(`Webhook Error: ${err.message}`);
-        }
+        console.error('Webhook signature verification failed:', err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
     switch (event.type) {
+        case 'checkout.session.completed': {
+            const s = event.data.object;
+            try {
+                if (s.mode === 'subscription' && s.customer) {
+                    let pmId = null;
+                    if (s.setup_intent) {
+                        const si = await stripe.setupIntents.retrieve(s.setup_intent);
+                        pmId = si?.payment_method || null;
+                    }
+                    // Fallback if no setup_intent
+                    if (!pmId && s.payment_method) {
+                        pmId = s.payment_method;
+                    }
+
+                    if (pmId) {
+                        await stripe.customers.update(s.customer, {
+                            invoice_settings: { default_payment_method: pmId }
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error('Error setting default payment method on checkout completion:', e.message);
+            }
+            break;
+        }
         case 'customer.subscription.created':
         case 'customer.subscription.updated': {
             const sub = event.data.object;
@@ -263,12 +258,25 @@ exports.stripeWebhook = asyncHandler(async (req, res) => {
                 updateData.stripeSubscriptionItemId = stripeSubscriptionItemId;
             }
 
-            await SubscriptionModel.findOneAndUpdate(
+            const updatedSubscription = await SubscriptionModel.findOneAndUpdate(
                 { stripeCustomerId: customerId },
                 updateData,
-                { upsert: true }
+                { upsert: true, new: true }
             );
-            console.log('Subscription updated successfully:', stripeSubscriptionId);
+
+
+            // Special handling for cancellation status changes
+            if (sub.status === 'canceled' && event.type === 'customer.subscription.updated') {
+                // Clear subscription-specific fields for canceled subscriptions
+                await SubscriptionModel.findOneAndUpdate(
+                    { stripeCustomerId: customerId },
+                    {
+                        stripeSubscriptionId: null,
+                        currentPeriodEnd: null,
+                        lastSyncedAt: new Date()
+                    }
+                );
+            }
 
             // If this is a new subscription creation, report initial usage
             if (event.type === 'customer.subscription.created' && stripeSubscriptionItemId) {
@@ -277,18 +285,16 @@ exports.stripeWebhook = asyncHandler(async (req, res) => {
                     const subscription = await SubscriptionModel.findOne({ stripeCustomerId: customerId });
                     if (subscription) {
                         const hrAdmin = await HRAdminModel.findById(subscription.hrAdmin).populate('employees');
-                        const seatCount = hrAdmin.employees?.length || 0;
+                        if (hrAdmin) {
+                            const seatCount = hrAdmin.employees?.length || 0;
 
-                        // Report initial usage to Stripe using new Billing Meter Events API
-                        await reportSeatUsage(customerId, seatCount);
+                            // Report initial usage to Stripe using new Billing Meter Events API
+                            await reportUsageIfChanged(customerId, seatCount);
 
-                        // Update local subscription record
-                        await SubscriptionModel.findOneAndUpdate(
-                            { stripeCustomerId: customerId },
-                            { seatCount, lastUsageReported: new Date() }
-                        );
-
-                        console.log(`Initial usage reported for new subscription: ${seatCount} employees`);
+                        } else {
+                            // HR-Admin not found, report 0 seats
+                            await reportUsageIfChanged(customerId, 0);
+                        }
                     }
                 } catch (error) {
                     console.error('Error reporting initial usage:', error.message);
@@ -299,48 +305,131 @@ exports.stripeWebhook = asyncHandler(async (req, res) => {
         case 'customer.subscription.deleted': {
             const sub = event.data.object;
             const customerId = sub.customer;
-            await SubscriptionModel.findOneAndUpdate(
-                { stripeCustomerId: customerId },
-                { status: 'canceled', lastSyncedAt: new Date() }
-            );
+            const subscriptionId = sub.id;
+
+            try {
+                await SubscriptionModel.findOneAndUpdate(
+                    { stripeCustomerId: customerId },
+                    {
+                        status: 'canceled',
+                        stripeSubscriptionId: null, // Clear subscription ID since it's deleted
+                        currentPeriodEnd: null, // Clear period end
+                        lastSyncedAt: new Date()
+                    },
+                    { new: true }
+                );
+            } catch (error) {
+                console.error('Error handling subscription deletion:', error.message);
+            }
             break;
         }
         case 'invoice.created': {
-            // When a new billing cycle starts, report current employee count
+            // Invoice has been created - usage should already be reported via invoice.upcoming
+            break;
+        }
+        case 'invoice.payment_succeeded': {
+            // Log successful payment and report current usage for next billing cycle
             const invoice = event.data.object;
             const customerId = invoice.customer;
+            const billingPeriodStart = new Date(invoice.period_start * 1000);
+
+            // Report current employee count immediately after payment for next billing cycle
+            try {
+                const subscription = await SubscriptionModel.findOne({ stripeCustomerId: customerId });
+                if (subscription) {
+                    const hrAdmin = await HRAdminModel.findById(subscription.hrAdmin).populate('employees');
+                    if (hrAdmin) {
+                        const seatCount = hrAdmin.employees?.length || 0;
+
+                        // Force report current usage for the next billing cycle (bypass deduplication)
+                        // This ensures Stripe always has the correct seat count after payment
+                        const { reportSeatUsage } = require('../utils/stripeUsageReporting');
+
+                        // For last aggregation, report the total seat count for the new billing period
+                        // Use the billing period start as timestamp to ensure it's always current
+                        const billingPeriodTimestamp = Math.floor(billingPeriodStart.getTime() / 1000);
+                        await reportSeatUsage(customerId, seatCount, 'employee_seats_last', billingPeriodTimestamp);
+
+                        // Update local subscription record with current billing period info
+                        await SubscriptionModel.findOneAndUpdate(
+                            { stripeCustomerId: customerId },
+                            {
+                                seatCount,
+                                lastUsageReported: billingPeriodStart,
+                                currentPeriodEnd: new Date(invoice.period_end * 1000)
+                            }
+                        );
+
+                    } else {
+                        // HR-Admin not found, report 0 seats
+                        const { reportSeatUsage } = require('../utils/stripeUsageReporting');
+                        const billingPeriodTimestamp = Math.floor(billingPeriodStart.getTime() / 1000);
+                        await reportSeatUsage(customerId, 0, 'employee_seats_last', billingPeriodTimestamp);
+
+                        await SubscriptionModel.findOneAndUpdate(
+                            { stripeCustomerId: customerId },
+                            {
+                                seatCount: 0,
+                                lastUsageReported: billingPeriodStart,
+                                currentPeriodEnd: new Date(invoice.period_end * 1000)
+                            }
+                        );
+
+                    }
+                }
+            } catch (error) {
+                console.error('Error reporting post-payment usage:', error.message);
+            }
+
+            // You can add revenue tracking logic here if needed
+            break;
+        }
+        case 'invoice.upcoming': {
+            // Report usage BEFORE invoice is created to ensure metered billing works correctly
+            const invoice = event.data.object;
+            const customerId = invoice.customer;
+            const billingPeriodStart = new Date(invoice.period_start * 1000);
 
             try {
                 const subscription = await SubscriptionModel.findOne({ stripeCustomerId: customerId });
                 if (subscription) {
                     const hrAdmin = await HRAdminModel.findById(subscription.hrAdmin).populate('employees');
-                    const seatCount = hrAdmin.employees?.length || 0;
+                    if (hrAdmin) {
+                        const seatCount = hrAdmin.employees?.length || 0;
 
-                    // Report usage for the new billing period
-                    await reportSeatUsage(customerId, seatCount);
+                        // Update subscription with upcoming billing period date
+                        await SubscriptionModel.findOneAndUpdate(
+                            { stripeCustomerId: customerId },
+                            {
+                                lastUsageReported: billingPeriodStart,
+                                currentPeriodEnd: new Date(invoice.period_end * 1000)
+                            }
+                        );
 
-                    // Update local subscription record
-                    await SubscriptionModel.findOneAndUpdate(
-                        { stripeCustomerId: customerId },
-                        { seatCount, lastUsageReported: new Date() }
-                    );
+                        // Report usage for the upcoming billing period using billing period timestamp
+                        const billingPeriodTimestamp = Math.floor(billingPeriodStart.getTime() / 1000);
+                        const { reportSeatUsage } = require('../utils/stripeUsageReporting');
+                        await reportSeatUsage(customerId, seatCount, 'employee_seats_last', billingPeriodTimestamp);
 
-                    console.log(`🔄 Billing cycle usage reported: ${seatCount} employees for customer ${customerId}`);
+                    } else {
+                        // HR-Admin not found, report 0 seats
+                        await SubscriptionModel.findOneAndUpdate(
+                            { stripeCustomerId: customerId },
+                            {
+                                lastUsageReported: billingPeriodStart,
+                                currentPeriodEnd: new Date(invoice.period_end * 1000)
+                            }
+                        );
+
+                        const billingPeriodTimestamp = Math.floor(billingPeriodStart.getTime() / 1000);
+                        const { reportSeatUsage } = require('../utils/stripeUsageReporting');
+                        await reportSeatUsage(customerId, 0, 'employee_seats_last', billingPeriodTimestamp);
+
+                    }
                 }
             } catch (error) {
-                console.error('Error reporting billing cycle usage:', error.message);
+                console.error('Error reporting upcoming billing usage:', error.message);
             }
-            break;
-        }
-        case 'invoice.payment_succeeded': {
-            // Log successful payment for revenue tracking
-            const invoice = event.data.object;
-            const customerId = invoice.customer;
-            const amount = invoice.amount_paid / 100; // Convert from cents
-
-            console.log(`💰 Payment succeeded: $${amount} for customer ${customerId}`);
-
-            // You can add revenue tracking logic here if needed
             break;
         }
         default:
@@ -398,25 +487,31 @@ exports.reportAllUsage = asyncHandler(async (req, res) => {
         for (const subscription of activeSubscriptions) {
             try {
                 const hrAdmin = await HRAdminModel.findById(subscription.hrAdmin._id).populate('employees');
-                const seatCount = hrAdmin.employees?.length || 0;
+                if (hrAdmin) {
+                    const seatCount = hrAdmin.employees?.length || 0;
 
-                // Report usage to Stripe
-                await reportSeatUsage(subscription.stripeCustomerId, seatCount);
+                    // Report usage to Stripe (with deduplication)
+                    await reportUsageIfChanged(subscription.stripeCustomerId, seatCount);
 
-                // Update local subscription record
-                await SubscriptionModel.findOneAndUpdate(
-                    { _id: subscription._id },
-                    { seatCount, lastUsageReported: new Date() }
-                );
+                    results.push({
+                        customerId: subscription.stripeCustomerId,
+                        hrAdminEmail: hrAdmin.email,
+                        seatCount,
+                        status: 'success'
+                    });
 
-                results.push({
-                    customerId: subscription.stripeCustomerId,
-                    hrAdminEmail: hrAdmin.email,
-                    seatCount,
-                    status: 'success'
-                });
+                } else {
+                    // HR-Admin not found, report 0 seats
+                    await reportUsageIfChanged(subscription.stripeCustomerId, 0);
 
-                console.log(`✅ Usage reported for ${hrAdmin.email}: ${seatCount} employees`);
+                    results.push({
+                        customerId: subscription.stripeCustomerId,
+                        hrAdminEmail: 'HR-Admin not found',
+                        seatCount: 0,
+                        status: 'success'
+                    });
+
+                }
             } catch (error) {
                 console.error(`❌ Error reporting usage for ${subscription.stripeCustomerId}:`, error.message);
                 results.push({

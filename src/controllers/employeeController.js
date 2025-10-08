@@ -128,22 +128,48 @@ exports.updaterequest = async (req, res) => {
       // Report usage to Stripe for metered billing
       try {
         const SubscriptionModel = require('../models/subscription');
-        const { reportSeatUsage } = require('../utils/stripeUsageReporting');
+        const { reportUsageIfChanged } = require('../utils/stripeUsageReporting');
         const subscription = await SubscriptionModel.findOne({ hrAdmin: data.hrAdmin });
 
         if (subscription && subscription.stripeSubscriptionId && subscription.stripeCustomerId) {
           const hrAdmin = await hrAdminModel.findById(data.hrAdmin).populate('employees');
-          const seatCount = hrAdmin.employees?.length || 0;
+          if (hrAdmin) {
+            const seatCount = hrAdmin.employees?.length || 0;
 
-          await reportSeatUsage(subscription.stripeCustomerId, seatCount);
+            // Use the lastUsageReported (billing-period aligned) if present to avoid 35-day limit during simulations
+            // Prefer end-of-period timestamp to guarantee invoice picks up the 'last' value
+            let customTs = null;
+            if (subscription.currentPeriodEnd) {
+              customTs = Math.floor(new Date(subscription.currentPeriodEnd).getTime() / 1000) - 60; // 1 min before period end
+            } else if (subscription.lastUsageReported) {
+              customTs = Math.floor(new Date(subscription.lastUsageReported).getTime() / 1000) + 60; // shortly after period start
+            }
+            try {
+              await reportUsageIfChanged(subscription.stripeCustomerId, seatCount, 'employee_seats_last', customTs, !!customTs);
+            } catch (e) {
+              if (e && typeof e.message === 'string' && (e.message.includes('in future') || e.message.includes('35 days'))) {
+                const safeNow = Math.floor(Date.now() / 1000) - 5;
+                try { await reportUsageIfChanged(subscription.stripeCustomerId, seatCount, 'employee_seats_last', safeNow, true); } catch (_) { }
+              } else { throw e; }
+            }
 
-          // Update local subscription record
-          await SubscriptionModel.findOneAndUpdate(
-            { hrAdmin: data.hrAdmin },
-            { seatCount, lastUsageReported: new Date() }
-          );
-
-          console.log(`Usage reported for HR-Admin ${data.hrAdmin}: ${seatCount} employees`);
+          } else {
+            // HR-Admin not found, report 0 seats
+            let customTs = null;
+            if (subscription.currentPeriodEnd) {
+              customTs = Math.floor(new Date(subscription.currentPeriodEnd).getTime() / 1000) - 60;
+            } else if (subscription.lastUsageReported) {
+              customTs = Math.floor(new Date(subscription.lastUsageReported).getTime() / 1000) + 60;
+            }
+            try {
+              await reportUsageIfChanged(subscription.stripeCustomerId, 0, 'employee_seats_last', customTs, !!customTs);
+            } catch (e) {
+              if (e && typeof e.message === 'string' && (e.message.includes('in future') || e.message.includes('35 days'))) {
+                const safeNow = Math.floor(Date.now() / 1000) - 5;
+                try { await reportUsageIfChanged(subscription.stripeCustomerId, 0, 'employee_seats_last', safeNow, true); } catch (_) { }
+              } else { throw e; }
+            }
+          }
         }
       } catch (error) {
         console.error('Error reporting usage to Stripe:', error.message);

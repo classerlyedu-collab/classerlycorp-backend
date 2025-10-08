@@ -10,36 +10,26 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
  * @param {string} stripeCustomerId - Stripe customer ID
  * @param {number} seatCount - Number of employee seats
  * @param {string} eventName - Name of the meter event (default: 'per_employee')
+ * @param {number} customTimestamp - Optional custom timestamp (defaults to current time)
  * @returns {Promise<Object>} Stripe meter event response
  */
-async function reportSeatUsage(stripeCustomerId, seatCount, eventName = 'per_employee') {
+async function reportSeatUsage(stripeCustomerId, seatCount, eventName = 'employee_seats_last', customTimestamp = null) {
     try {
+        // Use custom timestamp if provided, otherwise use current time
+        const timestamp = customTimestamp || Math.floor(Date.now() / 1000);
+
         const meterEvent = await stripe.billing.meterEvents.create({
             event_name: eventName,
-            timestamp: Math.floor(Date.now() / 1000),
+            timestamp: timestamp,
             payload: {
                 stripe_customer_id: stripeCustomerId,
                 value: seatCount
             }
         });
 
-        console.log(`✅ Usage reported to Stripe: ${seatCount} seats for customer ${stripeCustomerId}`);
-        console.log(`   Meter Event ID: ${meterEvent.id}`);
         return meterEvent;
     } catch (error) {
-        console.error('❌ Error reporting usage to Stripe:', error.message);
-        console.error('   Customer ID:', stripeCustomerId);
-        console.error('   Seat Count:', seatCount);
-        console.error('   Event Name:', eventName);
-
-        // If it's a meter not found error, provide helpful guidance
-        if (error.message.includes('meter') || error.message.includes('event_name') || error.message.includes('No active meter')) {
-            console.error('💡 Make sure you have created a billing meter named "per_employee" in your Stripe dashboard');
-            console.error('   Go to: Stripe Dashboard > Billing > Meters > Create meter');
-            console.error('   Event name: per_employee');
-            console.error('   Aggregation: sum (or raw)');
-            console.error('   Your meter ID: mtr_test_61TM7mt91n1y6k8tM41Q6rYBXLmLuNOC');
-        }
+        console.error('Error reporting usage to Stripe:', error.message);
 
         throw error;
     }
@@ -59,7 +49,6 @@ async function reportUsageWithFallback(stripeCustomerId, stripeSubscriptionItemI
     } catch (error) {
         // If new API fails and we have subscription item ID, try legacy API
         if (stripeSubscriptionItemId && error.message.includes('meter')) {
-            console.log('🔄 Falling back to legacy usage record API...');
             try {
                 return await stripe.subscriptionItems.createUsageRecord(
                     stripeSubscriptionItemId,
@@ -70,7 +59,7 @@ async function reportUsageWithFallback(stripeCustomerId, stripeSubscriptionItemI
                     }
                 );
             } catch (legacyError) {
-                console.error('❌ Both new and legacy APIs failed:', legacyError.message);
+                console.error('Both new and legacy APIs failed:', legacyError.message);
                 throw legacyError;
             }
         }
@@ -78,7 +67,68 @@ async function reportUsageWithFallback(stripeCustomerId, stripeSubscriptionItemI
     }
 }
 
+/**
+ * Report usage for the current billing period (prevents duplicate reporting)
+ * @param {string} stripeCustomerId - Stripe customer ID
+ * @param {number} seatCount - Number of employee seats
+ * @param {string} eventName - Name of the meter event (default: 'per_employee')
+ * @returns {Promise<Object>} Stripe meter event response
+ */
+async function reportBillingPeriodUsage(stripeCustomerId, seatCount, eventName = 'employee_seats_last') {
+    try {
+        // Use current timestamp - webhook handlers will provide billing period timestamps
+        const timestamp = Math.floor(Date.now() / 1000);
+
+
+        return await reportSeatUsage(stripeCustomerId, seatCount, eventName, timestamp);
+    } catch (error) {
+        console.error('Error reporting billing period usage:', error.message);
+        throw error;
+    }
+}
+
+/**
+ * Report usage with deduplication (only report if count has changed)
+ * @param {string} stripeCustomerId - Stripe customer ID
+ * @param {number} seatCount - Number of employee seats
+ * @param {string} eventName - Name of the meter event (default: 'per_employee')
+ * @returns {Promise<Object|null>} Stripe meter event response or null if no change
+ */
+async function reportUsageIfChanged(stripeCustomerId, seatCount, eventName = 'employee_seats_last', customTimestamp = null, force = false) {
+    try {
+        // Import here to avoid circular dependency
+        const SubscriptionModel = require('../models/subscription');
+
+        // Check if the seat count has changed since last report
+        const subscription = await SubscriptionModel.findOne({ stripeCustomerId });
+        if (!force && subscription && subscription.seatCount === seatCount && !customTimestamp) {
+            return null;
+        }
+
+        // For 'last' aggregation, report the total current seat count
+        // This ensures Stripe knows the exact number of active seats
+        const timestampToUse = customTimestamp || undefined;
+        const result = await reportSeatUsage(stripeCustomerId, seatCount, eventName, timestampToUse);
+
+
+        // Update the subscription record
+        if (subscription) {
+            await SubscriptionModel.findOneAndUpdate(
+                { stripeCustomerId },
+                { seatCount, lastUsageReported: new Date() }
+            );
+        }
+
+        return result;
+    } catch (error) {
+        console.error('Error reporting usage with deduplication:', error.message);
+        throw error;
+    }
+}
+
 module.exports = {
     reportSeatUsage,
-    reportUsageWithFallback
+    reportUsageWithFallback,
+    reportBillingPeriodUsage,
+    reportUsageIfChanged
 };

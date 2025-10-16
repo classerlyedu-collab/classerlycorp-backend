@@ -53,6 +53,29 @@ const fileupload = multer({
   },
 });
 
+// Configure document upload (for assignments)
+const documentUpload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB for documents
+    files: 1
+  },
+  fileFilter: function (req, file, callback) {
+    // Check file type - allow only .docx files
+    const allowedDocTypes = /docx/;
+    const extname = path.extname(file.originalname).toLowerCase();
+
+    const isDocument = allowedDocTypes.test(extname.replace('.', '')) &&
+      (file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+
+    if (isDocument) {
+      return callback(null, true);
+    } else {
+      callback(new Error('Only Microsoft Word documents (.docx) are allowed!'), false);
+    }
+  },
+});
+
 const router = Router();
 
 // Error handling middleware for multer
@@ -61,7 +84,7 @@ const handleMulterError = (err, req, res, next) => {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
         success: false,
-        message: 'File too large. Maximum size is 5MB.'
+        message: 'File too large. Maximum size is 10MB for documents, 5MB for images.'
       });
     }
     if (err.code === 'LIMIT_FILE_COUNT') {
@@ -81,5 +104,6 @@ const handleMulterError = (err, req, res, next) => {
 };
 
 router.post("/uploadimage", fileupload.single("file"), handleMulterError, upload);
+router.post("/uploaddocument", documentUpload.single("file"), handleMulterError, upload);
 
 module.exports = router;

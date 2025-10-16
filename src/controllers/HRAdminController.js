@@ -800,12 +800,42 @@ exports.mycourses = async (req, res) => {
 
 exports.mysubjects = async (req, res) => {
   try {
-    let data = await HRAdminModel
-      .findOne({ _id: req.user?.profile?._id })
-      .populate({ path: "subjects", select: ["name", "image"] });
+    const userType = req.user?.userType;
+    let subjects = [];
+
+    if (userType === "HR-Admin") {
+      let data = await HRAdminModel
+        .findOne({ _id: req.user?.profile?._id })
+        .populate({ path: "subjects", select: ["name", "image"] });
+      subjects = data?.subjects || [];
+    } else if (userType === "Instructor") {
+      // Instructors don't have their own subjects - they access subjects from linked HR-Admins
+      const instructor = await InstructorModel
+        .findOne({ auth: req.user?._id })
+        .select('hrAdmins');
+
+      if (instructor && instructor.hrAdmins && instructor.hrAdmins.length > 0) {
+        // Get all HR-Admins this instructor is linked to
+        const hrAdmins = await HRAdminModel
+          .find({ _id: { $in: instructor.hrAdmins } })
+          .populate({ path: "subjects", select: ["name", "image"] });
+
+        // Collect unique subjects from all linked HR-Admins
+        const subjectMap = new Map();
+        hrAdmins.forEach(hr => {
+          (hr.subjects || []).forEach(subject => {
+            if (!subjectMap.has(subject._id.toString())) {
+              subjectMap.set(subject._id.toString(), subject);
+            }
+          });
+        });
+        subjects = Array.from(subjectMap.values());
+      }
+    }
+
     return res.send({
       success: true,
-      data: data.subjects,
+      data: subjects,
       message: "subjects get Successfully",
     });
   } catch (error) {

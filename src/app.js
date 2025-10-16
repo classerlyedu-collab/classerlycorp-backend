@@ -45,6 +45,9 @@ const topicRoutes = require("./routes/topic.routes");
 
 const quizRoutes = require("./routes/quiz.routes")
 const employeeRoutes = require("./routes/employee.routes")
+const rubricRoutes = require("./routes/rubric.routes");
+const assignmentRoutes = require("./routes/assignment.routes");
+const assignmentSubmissionRoutes = require("./routes/assignmentSubmission.routes");
 // const adddata = require("./utils/adddummydata");
 const bodyParser = require("body-parser");
 
@@ -97,6 +100,9 @@ app.use(
 // app.use('/api/v1/curriculum',curriculumRoutes);
 app.use("/api/v1/hr-admin", hrAdminRoutes);
 app.use("/api/v1/quiz", quizRoutes);
+app.use("/api/v1/rubric", rubricRoutes);
+app.use("/api/v1/assignment", assignmentRoutes);
+app.use("/api/v1/submission", assignmentSubmissionRoutes);
 
 
 

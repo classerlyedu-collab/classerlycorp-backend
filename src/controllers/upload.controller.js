@@ -24,27 +24,43 @@ exports.upload = asyncHandler(async (req, res, next) => {
       return res.status(400).json({ success: false, message: "File not found on server" });
     }
 
-    // Determine resource type and folder based on file type
+    // Determine resource type and folder based on upload type
     const isVideo = req.file.mimetype.startsWith('video/');
-    const folder = "Classify Enterprises/discussion";
+    const isDocument = req.file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+    // Determine folder based on file type and route
+    let folder = "Classify Enterprises/discussion"; // default for images/videos
+    let resourceType = "auto"; // default
+
+    // Check if it's a document upload (assignments) - .docx only
+    if (isDocument) {
+      folder = "Classify Enterprises/assignments";
+      resourceType = "raw"; // Documents must use 'raw' resource type in Cloudinary
+    }
+    // Check if it's an image/video upload (discussions)
+    else if (req.file.mimetype.startsWith('image/') || req.file.mimetype.startsWith('video/')) {
+      folder = "Classify Enterprises/discussion";
+    }
 
     // Upload options with quality optimization
     const uploadOptions = {
-      resource_type: "auto",
+      resource_type: resourceType,
       folder: folder,
     };
 
-    // Add quality optimization for images
-    if (!isVideo) {
-      uploadOptions.quality = "auto:low"; // Automatic quality reduction for images
-      uploadOptions.fetch_format = "auto"; // Automatically choose best format (WebP, etc.)
-    } else {
-      // Video optimization - convert to web-friendly format
-      uploadOptions.quality = "auto:low";
-      uploadOptions.resource_type = "video";
-      uploadOptions.format = "mp4"; // Convert to MP4 for universal browser support
-      uploadOptions.video_codec = "h264"; // Use H.264 codec for best compatibility
-      uploadOptions.audio_codec = "aac"; // AAC audio for best compatibility
+    // Add quality optimization for images and videos (but not documents)
+    if (!isDocument) {
+      if (!isVideo) {
+        uploadOptions.quality = "auto:low"; // Automatic quality reduction for images
+        uploadOptions.fetch_format = "auto"; // Automatically choose best format (WebP, etc.)
+      } else {
+        // Video optimization - convert to web-friendly format
+        uploadOptions.quality = "auto:low";
+        uploadOptions.resource_type = "video";
+        uploadOptions.format = "mp4"; // Convert to MP4 for universal browser support
+        uploadOptions.video_codec = "h264"; // Use H.264 codec for best compatibility
+        uploadOptions.audio_codec = "aac"; // AAC audio for best compatibility
+      }
     }
 
     // Upload to Cloudinary
